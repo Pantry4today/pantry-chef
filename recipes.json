@@ -1,13 +1,177 @@
-async function fetchCloudCatalogs() {
-    try {
-        showToast("Fetching latest recipes from cloud...");
-        const response = await fetch('https://yourusername.github.io/pantry-chef/recipes.json');
-        const data = await response.json();
-        
-        // Populate your cloud catalog dynamically
-        window.CLOUD_CATALOG = data.packs;
-        openCatalogModal();
-    } catch (err) {
-        showToast("Could not load cloud catalogs. Offline mode active.");
+{
+  "updated": "2026-11-10",
+  "packs": [
+    {
+      "id": "pack_bbq",
+      "name": "Backyard BBQ & Smoker Pack",
+      "description": "Low-and-slow smoker and grill favorites with exact pitmaster measurements.",
+      "recipes": [
+        {
+          "name": "Smoked Pulled Pork Shoulder",
+          "description": "Classic low-and-slow hardwood smoked pork shoulder rubbed with brown sugar and paprika, finished with a tangy apple cider vinegar mop.",
+          "mixAndMatch": "Pile high on toasted buns or serve over baked sweet potatoes.",
+          "ingredients": [
+            "Pork Shoulder — 4 to 5 lb (2kg) bone-in or boneless pork butt",
+            "Brown Sugar — 1/4 cup (50g) packed brown sugar",
+            "Paprika — 2 tbsp smoked paprika + 1 tbsp garlic powder",
+            "Salt — 1 1/2 tbsp kosher salt + 1 tsp coarse black pepper",
+            "Apple Cider Vinegar — 1/2 cup (120ml) apple cider vinegar for spritzing & finishing"
+          ],
+          "instructions": [
+            "Dry Rub: Combine brown sugar, smoked paprika, garlic powder, kosher salt, and black pepper. Massage thoroughly over all sides of the pork shoulder.",
+            "Smoke at 225°F: Preheat smoker to 225°F (107°C) with apple, hickory, or oak wood. Smoke uncovered for 5 hours, spritzing with apple cider vinegar every hour after the first 3 hours.",
+            "Wrap & Finish: Wrap tightly in foil or butcher paper and continue cooking at 250°F (121°C) for 2–3 hours until internal temperature reaches 203°F (95°C) and a probe slides in like warm butter.",
+            "Rest & Pull: Rest wrapped for 45–60 minutes, shred with two forks, and toss with the remaining splash of apple cider vinegar and pan juices."
+          ],
+          "appliance": "Smoker",
+          "mealType": "Dinner",
+          "dishType": "Main Dish",
+          "image": "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Pulled+Pork"
+        },
+        {
+          "name": "Hardwood-Smoked Garlic Butter Chicken Breasts",
+          "description": "Sweet hardwood smoke kisses seasoned chicken breasts before they finish in a warm garlic-butter pan bath that locks in moisture.",
+          "mixAndMatch": "Slice warm over rice or cube leftovers for smoked chicken quesadillas.",
+          "ingredients": [
+            "Chicken Breast — 2 large chicken breasts (8–10 oz / 250–300g each)",
+            "Butter — 3 tbsp (45g) unsalted butter",
+            "Garlic — 2 cloves minced garlic + 1 tsp garlic powder",
+            "Paprika — 1 tsp smoked paprika + 3/4 tsp kosher salt & black pepper"
+          ],
+          "instructions": [
+            "Smoke: Preheat smoker to 225°F (107°C). Coat chicken breasts with paprika, garlic powder, salt, and pepper, and smoke directly on the grates for 45 minutes.",
+            "Butter Bath: Melt 3 tbsp butter and minced garlic in a small foil or cast-iron pan on the smoker. Transfer chicken to the butter pan, turn to coat, and smoke 20–25 minutes more until internal temp hits 162°F (72°C). Rest 5 minutes before slicing."
+          ],
+          "appliance": "Smoker",
+          "mealType": "Dinner",
+          "dishType": "Main Dish",
+          "image": "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Smoked+Chicken"
+        }
+      ]
+    },
+    {
+      "id": "pack_sousvide",
+      "name": "Sous Vide & Steakhouse Pack",
+      "description": "Precision water-bath recipes for edge-to-edge tenderness and cast-iron searing.",
+      "recipes": [
+        {
+          "name": "Sous Vide Edge-to-Edge Juicy Garlic Butter Chicken Breast",
+          "description": "Water-bath cooking at 149°F transforms chicken breast into impossibly juicy meat, finished with a 60-second cast-iron butter sear.",
+          "mixAndMatch": "Pour the savory bag juices into the skillet after searing and swirl in an extra tablespoon of butter for an instant pan jus.",
+          "ingredients": [
+            "Chicken Breast — 2 large boneless breasts (8–10 oz / 250–300g each)",
+            "Butter — 2 tbsp (30g) unsalted butter, divided (1 tbsp in bag + 1 tbsp for sear)",
+            "Garlic — 2 cloves garlic, smashed",
+            "Salt — 3/4 tsp kosher salt + 1/4 tsp black pepper"
+          ],
+          "instructions": [
+            "Preheat Water Bath: Set your sous vide circulator to 149°F (65°C).",
+            "Bag & Cook: Season chicken breasts with salt and pepper, seal in a vacuum or zip-top bag with 1 tbsp butter and smashed garlic, and cook submerged for 1.5 hours.",
+            "Dry & Flash Sear: Remove chicken from the bag and pat completely dry with paper towels. Melt the remaining 1 tbsp butter in a smoking-hot cast-iron skillet over high heat and sear 60 seconds per side until golden brown."
+          ],
+          "appliance": "Sous Vide",
+          "mealType": "Dinner",
+          "dishType": "Main Dish",
+          "image": "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Sous+Vide+Chicken"
+        },
+        {
+          "name": "Sous Vide Steakhouse Ribeye with Roasted Garlic Butter",
+          "description": "Thick steak cooked edge-to-edge medium-rare in a precision bath, then crusted in a blazing skillet with foaming garlic butter.",
+          "mixAndMatch": "Add a sprig of fresh rosemary or thyme to the bag before sealing.",
+          "ingredients": [
+            "Steak — 2 thick ribeye or strip steaks (10–12 oz / 300g each, 1.5-inch thick)",
+            "Butter — 3 tbsp (45g) unsalted butter, divided",
+            "Garlic — 4 cloves garlic, lightly crushed",
+            "Salt — 1 tsp kosher salt + 1/2 tsp coarse black pepper"
+          ],
+          "instructions": [
+            "Sous Vide Bath: Preheat water bath to 132°F (55.5°C). Season steaks generously, seal in a bag with 1 tbsp butter and 2 crushed garlic cloves, and cook for 2 hours.",
+            "Cast-Iron Sear: Remove steaks and pat bone-dry with paper towels. Heat a cast-iron skillet until smoking, add 2 tbsp butter and remaining garlic, and sear steaks 60 seconds per side while basting continuously."
+          ],
+          "appliance": "Sous Vide",
+          "mealType": "Dinner",
+          "dishType": "Main Dish",
+          "image": "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Sous+Vide+Steak"
+        }
+      ]
+    },
+    {
+      "id": "pack_sides",
+      "name": "Holiday Side Dishes",
+      "description": "Classic family sides and casseroles with exact measurements.",
+      "recipes": [
+        {
+          "name": "Velvety Roasted Garlic Mashed Potatoes",
+          "description": "Fluffy boiled potatoes whipped with warm milk, plenty of melted butter, and sweet sauteed garlic.",
+          "mixAndMatch": "Fold in 1/2 cup shredded cheddar or 2 tbsp sour cream for loaded mashed potatoes.",
+          "ingredients": [
+            "Potatoes — 2 lbs (900g) Yukon Gold or Russet potatoes, peeled and quartered",
+            "Butter — 4 tbsp (60g) unsalted butter, melted",
+            "Milk — 1/2 cup (120ml) warm whole milk or heavy cream",
+            "Garlic — 3 cloves garlic, finely minced and sautéed in butter",
+            "Salt — 1 tsp kosher salt + black pepper to taste"
+          ],
+          "instructions": [
+            "Boil Potatoes: Place peeled, quartered potatoes in a pot of cold salted water. Bring to a boil and simmer 15–18 minutes until fork-tender, then drain thoroughly.",
+            "Infuse Butter: In a small pan, melt the 4 tbsp butter over low heat and gently cook the minced garlic for 1 minute until fragrant (do not brown).",
+            "Mash: Mash the hot potatoes while slowly folding in the warm milk and garlic butter until smooth and creamy."
+          ],
+          "appliance": "Stovetop",
+          "mealType": "Dinner",
+          "dishType": "Side Dish",
+          "image": "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Mashed+Potatoes"
+        },
+        {
+          "name": "Golden Scalloped Potatoes in Cheddar Cream Sauce",
+          "description": "Thinly sliced potatoes layered with sweet onions and baked in a rich garlic-cheddar cream sauce until bubbling.",
+          "mixAndMatch": "Layer diced ham or crumbled bacon between the potato slices to turn it into a main dish.",
+          "ingredients": [
+            "Potatoes — 4 medium potatoes (700g), thinly sliced into 1/8-inch (3mm) rounds",
+            "Onions — 1 small onion (100g), thinly sliced into rings",
+            "Cheddar Cheese — 1 cup (115g) shredded sharp cheddar cheese, divided",
+            "Milk — 1 3/4 cups (420ml) warm milk",
+            "Butter — 3 tbsp (45g) unsalted butter + 2 tbsp flour",
+            "Garlic — 2 cloves garlic, minced"
+          ],
+          "instructions": [
+            "Make Cheese Sauce: Preheat oven to 375°F (190°C). Melt 3 tbsp butter over medium heat, sauté garlic 30 seconds, whisk in 2 tbsp flour for 1 minute, then slowly whisk in 1 3/4 cups warm milk until thickened. Stir in half the cheddar.",
+            "Layer & Bake: Layer sliced potatoes and onions in a greased baking dish, pour the warm sauce over top, cover with foil, and bake 35 minutes. Uncover, top with remaining cheddar, and bake 20 minutes more until tender and golden."
+          ],
+          "appliance": "Oven",
+          "mealType": "Dinner",
+          "dishType": "Side Dish",
+          "image": "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Scalloped+Potatoes"
+        }
+      ]
+    },
+    {
+      "id": "pack_weeknight",
+      "name": "30-Minute Weeknight Skillets",
+      "description": "Fast one-pan family dinners for busy weeknights.",
+      "recipes": [
+        {
+          "name": "Creamy Garlic Tuscan Chicken Thighs",
+          "description": "Crispy golden chicken thighs simmered in a velvety garlic, parmesan, and spinach cream sauce.",
+          "mixAndMatch": "Swap chicken thighs for chicken breast steaks, pork chops, or shrimp.",
+          "ingredients": [
+            "Chicken Thighs — 1.5 lbs (680g) boneless, skinless chicken thighs",
+            "Butter — 2 tbsp (30g) unsalted butter",
+            "Garlic — 4 cloves garlic, finely minced",
+            "Heavy Cream — 1 cup (240ml) heavy cream + 1/2 cup (120ml) chicken broth",
+            "Parmesan Cheese — 1/2 cup (50g) freshly grated parmesan",
+            "Spinach — 2 cups (60g) fresh baby spinach"
+          ],
+          "instructions": [
+            "Sear Chicken: Season chicken thighs with salt and pepper. Sear in 2 tbsp melted butter over medium-high heat for 5–6 minutes per side until golden brown (165°F / 74°C). Set aside.",
+            "Build Sauce: Sauté minced garlic in the pan drippings for 30 seconds. Whisk in chicken broth and heavy cream, simmering for 3 minutes until slightly thickened.",
+            "Finish: Stir in grated parmesan and fresh spinach until wilted, then return chicken to the pan to coat in the sauce."
+          ],
+          "appliance": "Stovetop",
+          "mealType": "Dinner",
+          "dishType": "Main Dish",
+          "image": "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Tuscan+Chicken"
+        }
+      ]
     }
+  ]
 }
