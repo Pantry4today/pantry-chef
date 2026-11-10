@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantry Chef</title>
+    
+    <!-- Google Fonts: Merriweather for Headers, Inter for Body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        olive: '#4b5e40',
+                        denim: '#319795', /* Coastal Surf */
+                        saddle: '#2c4c3b', /* Forest Pine */
+                        cream: '#fcf9f2',
+                        brick: '#a84c3d',
+                        darkText: '#455a64', /* Rustic Slate */
+                        borderRustic: '#d1c7b8',
+                        fridge: '#b0c4de',
+                        freezer: '#e0e8f0',
+                        pantry: '#e2d5c4'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Rustic Country Store Theme */
+        body { 
+            background: linear-gradient(rgba(245, 240, 230, 0.92), rgba(245, 240, 230, 0.92)), 
+                        url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80') center/cover fixed;
+            color: #455a64; 
+        }
+        .hidden { display: none !important; }
+        
+        /* Navigation Tabs */
+        .tab-active { border-bottom: 4px solid #319795; color: #319795; font-weight: bold; }
+        .tab-inactive { border-bottom: 4px solid transparent; color: #2c4c3b; opacity: 0.7; }
+        
+        /* Toggle Switch Styles */
+        .toggle-checkbox:checked { right: 0; border-color: #319795; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #319795; }
+        .toggle-checkbox { right: 4px; z-index: 1; border-color: #d1c7b8; transition: all 0.3s; }
+        .toggle-label { background-color: #d1c7b8; transition: all 0.3s; }
+        
+        /* Global Rustic UI styles */
+        .rustic-card {
+            background-color: #f4eedd;
+            border: 1px solid #d1c7b8;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(69, 90, 100, 0.1);
+        }
+        .rustic-input {
+            background-color: #fff;
+            border: 1px solid #d1c7b8;
+            border-radius: 4px;
+            color: #455a64;
+        }
+
+        /* Checkbox list styles */
+        .category-header {
+            font-family: 'Merriweather', serif;
+            color: #2c4c3b;
+            background-color: #e5dfce;
+            border-bottom: 1px solid #d1c7b8;
+            border-top: 1px solid #d1c7b8;
+        }
+        
+        /* Custom scrollbar for the checklist */
+        .scroll-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scroll-area::-webkit-scrollbar-track {
+            background: #f4eedd; 
+            border-radius: 4px;
+        }
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: #d1c7b8; 
+            border-radius: 4px;
+        }
+        .scroll-area::-webkit-scrollbar-thumb:hover {
+            background: #a39b8f; 
+        }
+
+        /* Toast animation */
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px) translateX(-50%); }
+            10% { opacity: 1; transform: translateY(0) translateX(-50%); }
+            90% { opacity: 1; transform: translateY(0) translateX(-50%); }
+            100% { opacity: 0; transform: translateY(20px) translateX(-50%); }
+        }
+        .toast-anim {
+            animation: fadeUp 3s ease-in-out forwards;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans relative">
+
+    <!-- Header & Navigation -->
+    <header class="bg-cream shadow-sm sticky top-0 z-40 border-b-2 border-denim">
+        <div class="text-center py-4 bg-denim text-cream">
+            <h1 class="text-3xl font-serif font-bold tracking-wide shadow-sm">Pantry Chef</h1>
+            <p class="text-xs uppercase tracking-widest opacity-90 mt-1 font-sans">General Store & Kitchen</p>
+        </div>
+        <nav class="flex justify-around bg-cream">
+            <button onclick="switchTab('pantry')" id="btn-pantry" class="tab-active flex-1 py-3 text-sm font-sans uppercase tracking-wide transition-all">Pantry</button>
+            <button onclick="switchTab('recipes')" id="btn-recipes" class="tab-inactive flex-1 py-3 text-sm font-sans uppercase tracking-wide transition-all">Recipes</button>
+            <button onclick="switchTab('settings')" id="btn-settings" class="tab-inactive flex-1 py-3 text-sm font-sans uppercase tracking-wide transition-all">Settings</button>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow overflow-y-auto p-4 max-w-2xl mx-auto w-full">
+        
+        <!-- ==================== PANTRY TAB ==================== -->
+        <section id="tab-pantry" class="space-y-6">
+            <div class="rustic-card p-4">
+                <h2 class="font-serif font-bold text-xl mb-4 text-saddle border-b border-borderRustic pb-2">Stock Your Pantry</h2>
+                <div class="flex flex-col gap-3">
+                    
+                    <!-- Mobile-Optimized Multi-Select List -->
+                    <div class="rustic-input h-64 overflow-y-auto scroll-area flex flex-col pb-2 shadow-inner" id="ingredientChecklist">
+                        
+                        <!-- Dynamic Custom Items Container -->
+                        <div id="customItemsContainer"></div>
+
+                        <div class="category-header sticky top-0 px-3 py-1.5 text-sm font-bold shadow-sm z-10">Proteins & Meats</div>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Ground Beef" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Ground Beef</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Steak" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Steak (Ribeye / Strip / Sirloin)</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Beef Chuck Roast" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Beef Chuck Roast</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Chicken Breast" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Chicken Breast</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Chicken Thighs" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Chicken Thighs</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Chicken Wings" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Chicken Wings / Drumsticks</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Ground Turkey" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Ground Turkey</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Pork Chops" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Pork Chops</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Pork Shoulder" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Pork Shoulder / Butt</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Pork Tenderloin" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Pork Tenderloin</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Bacon" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Bacon</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Sausage" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Sausage (Italian / Smoked)</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Ham" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Ham</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Salmon" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Salmon</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Shrimp" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Shrimp</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Cod" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Cod / White Fish</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Tofu" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Tofu</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Eggs" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Eggs</span></label>
+                        
+                        <div class="category-header sticky top-0 px-3 py-1.5 text-sm font-bold shadow-sm z-10 mt-1">Fresh Produce</div>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Onions" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Onions (Yellow / White / Red)</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Green Onions" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Green Onions / Scallions</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Garlic" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Garlic</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Potatoes" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Potatoes (Russet / Yukon Gold)</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Sweet Potatoes" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Sweet Potatoes</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Carrots" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Carrots</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Celery" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Celery</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Broccoli" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Broccoli</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Cauliflower" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Cauliflower</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Bell Peppers" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Bell Peppers</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Jalapenos" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Jalapeños</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Spinach" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Spinach</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Mushrooms" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Mushrooms</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Zucchini" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Zucchini / Yellow Squash</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Asparagus" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Asparagus</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Green Beans" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Green Beans</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Corn" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Corn</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Tomatoes" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Tomatoes</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Avocados" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Avocados</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Lemons" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Lemons / Limes</span></label>
+                        
+                        <div class="category-header sticky top-0 px-3 py-1.5 text-sm font-bold shadow-sm z-10 mt-1">Dairy & Refrigerated</div>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Milk" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Milk</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Heavy Cream" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Heavy Cream / Half & Half</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Butter" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Butter</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Sour Cream" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Sour Cream</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Cream Cheese" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Cream Cheese</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Greek Yogurt" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Greek Yogurt</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Cheddar Cheese" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Cheddar Cheese</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Mozzarella" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Mozzarella</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Parmesan Cheese" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Parmesan Cheese</span></label>
+                        
+                        <div class="category-header sticky top-0 px-3 py-1.5 text-sm font-bold shadow-sm z-10 mt-1">Dry Goods & Grains</div>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="White Rice" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">White Rice</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Brown Rice" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Brown Rice</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Spaghetti" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Spaghetti</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Pasta" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Pasta (Penne / Rigatoni / Macaroni)</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Egg Noodles" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Egg Noodles</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Bread" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Bread / Rolls</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Tortillas" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Tortillas</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Breadcrumbs" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Breadcrumbs / Panko</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Oats" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Rolled Oats</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Flour" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Flour</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Cornstarch" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Cornstarch</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Sugar" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Sugar</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Brown Sugar" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Brown Sugar</span></label>
+
+                        <div class="category-header sticky top-0 px-3 py-1.5 text-sm font-bold shadow-sm z-10 mt-1">Canned & Jarred</div>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Black Beans" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Black Beans</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Kidney Beans" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Kidney / Pinto Beans</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Chickpeas" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Chickpeas / Garbanzo Beans</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Diced Tomatoes" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Diced / Crushed Tomatoes</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Tomato Sauce" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Tomato Sauce / Marinara</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Tomato Paste" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Tomato Paste</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Chicken Broth" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Chicken Broth / Stock</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Beef Broth" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Beef Broth / Stock</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Coconut Milk" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Coconut Milk</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Canned Tuna" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Canned Tuna</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Salsa" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Salsa</span></label>
+
+                        <div class="category-header sticky top-0 px-3 py-1.5 text-sm font-bold shadow-sm z-10 mt-1">Oils, Spices & Condiments</div>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Olive Oil" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Olive Oil</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Salt" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Salt</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Black Pepper" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Black Pepper</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Garlic Powder" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Garlic Powder</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Onion Powder" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Onion Powder</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Paprika" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Paprika / Smoked Paprika</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Cumin" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Cumin</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Chili Powder" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Chili Powder</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Italian Seasoning" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Italian Seasoning / Oregano</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Rosemary" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Rosemary / Thyme</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Soy Sauce" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Soy Sauce</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Worcestershire Sauce" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Worcestershire Sauce</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Honey" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Honey</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Apple Cider Vinegar" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Apple Cider Vinegar</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="BBQ Sauce" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">BBQ Sauce</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Dijon Mustard" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Dijon / Yellow Mustard</span></label>
+                        <label class="flex items-center gap-3 px-3 py-2 border-b border-borderRustic/30 hover:bg-cream/50 cursor-pointer"><input type="checkbox" value="Mayonnaise" class="ingredient-cb w-4 h-4 accent-denim"><span class="text-sm font-medium">Mayonnaise</span></label>
+                    </div>
+
+                    <div class="flex flex-col gap-2 text-sm mt-2">
+                        <input type="text" id="customIngredient" placeholder="Or write custom item..." class="p-3 rustic-input">
+                        <label class="flex items-center gap-2 text-sm text-saddle font-medium px-1">
+                            <input type="checkbox" id="saveCustomCheckbox" class="w-4 h-4 accent-denim">
+                            Save to my quick-select list
+                        </label>
+                        <select id="ingredientLocation" class="p-3 rustic-input font-bold text-saddle">
+                            <option value="Pantry">Location: Pantry</option>
+                            <option value="Fridge">Location: Fridge</option>
+                            <option value="Freezer">Location: Freezer</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="addIngredient()" class="bg-denim text-cream font-bold py-3 rounded mt-2 shadow-sm hover:opacity-90 uppercase tracking-wider text-sm transition-all">Add to Inventory</button>
+                </div>
+                
+                <div class="flex gap-2 mt-4 pt-4 border-t border-borderRustic">
+                    <button onclick="showToast('Scanner module would open here (Camera API)')" class="flex-1 border-2 border-denim text-denim font-bold py-2 rounded text-sm bg-transparent hover:bg-denim/10 transition-all">Scan Barcode</button>
+                    <button onclick="showToast('Receipt upload module would open here (OCR API)')" class="flex-1 border-2 border-denim text-denim font-bold py-2 rounded text-sm bg-transparent hover:bg-denim/10 transition-all">Scan Receipt</button>
+                </div>
+            </div>
+
+            <div class="rustic-card p-4">
+                <div class="flex justify-between items-center mb-4 border-b border-borderRustic pb-2">
+                    <div>
+                        <h2 class="font-serif font-bold text-xl text-saddle">Current Stock</h2>
+                        <p class="text-[11px] text-darkText opacity-75">Tap any location badge to move items between Pantry, Fridge, or Freezer.</p>
+                    </div>
+                    <button onclick="triggerClearInventory()" class="text-xs text-brick underline font-bold hover:opacity-80">Clear All</button>
+                </div>
+                <div id="inventoryList" class="space-y-2">
+                    <!-- Inventory items render here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== RECIPES TAB ==================== -->
+        <section id="tab-recipes" class="hidden space-y-6">
+            <div class="rustic-card p-4">
+                <h2 class="font-serif font-bold text-xl mb-4 text-saddle border-b border-borderRustic pb-2">Kitchen Planner</h2>
+                
+                <div class="grid grid-cols-2 gap-4 mb-5">
+                    <!-- Strict Match Toggle -->
+                    <div class="flex flex-col justify-center bg-white p-3 rounded border border-borderRustic">
+                        <span class="text-xs font-bold mb-1 text-saddle uppercase tracking-wide">Strict Match (100%)</span>
+                        <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in mt-1">
+                            <input type="checkbox" name="toggle" id="strictToggle" checked class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                            <label for="strictToggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label>
+                        </div>
+                    </div>
+
+                    <!-- Appliances -->
+                    <div class="flex flex-col justify-center bg-white p-3 rounded border border-borderRustic relative">
+                        <span class="text-xs font-bold mb-1 text-saddle uppercase tracking-wide">Appliances</span>
+                        <button onclick="toggleApplianceMenu()" id="applianceBtn" class="text-sm bg-cream border border-borderRustic rounded p-1.5 text-left truncate font-medium">Any / All</button>
+                        
+                        <!-- Floating Appliance Modal -->
+                        <div id="applianceMenu" class="hidden absolute top-[100%] left-0 w-full bg-cream border border-saddle shadow-xl z-50 max-h-48 overflow-y-auto mt-1 rounded p-2">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Meal Type -->
+                    <div class="flex flex-col justify-center bg-white p-3 rounded border border-borderRustic">
+                        <span class="text-xs font-bold mb-1 text-saddle uppercase tracking-wide">Meal Type</span>
+                        <select id="filterMeal" class="text-sm rustic-input p-1.5">
+                            <option value="Any">Any</option>
+                            <option value="Breakfast">Breakfast</option>
+                            <option value="Lunch">Lunch</option>
+                            <option value="Dinner">Dinner</option>
+                        </select>
+                    </div>
+
+                    <!-- Dish Type -->
+                    <div class="flex flex-col justify-center bg-white p-3 rounded border border-borderRustic">
+                        <span class="text-xs font-bold mb-1 text-saddle uppercase tracking-wide">Dish Type</span>
+                        <select id="filterDish" class="text-sm rustic-input p-1.5">
+                            <option value="Any">Any</option>
+                            <option value="Main Dish">Main Dish</option>
+                            <option value="Side Dish">Side Dish</option>
+                            <option value="Bake">Bake</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button onclick="generateRecipes(false)" class="bg-denim text-cream font-bold py-3 rounded shadow-sm hover:opacity-90 uppercase tracking-widest text-sm transition-all">Find Recipes</button>
+                    <div class="flex gap-2">
+                        <button onclick="generateRecipes(true)" class="flex-1 bg-saddle text-cream font-bold py-2 rounded shadow-sm hover:opacity-90 uppercase tracking-widest text-[11px] transition-all">Prioritize Oldest Food</button>
+                        <button onclick="refreshRecipes()" id="refreshBtn" class="hidden flex-1 border-2 border-denim text-denim bg-transparent font-bold py-2 rounded shadow-sm hover:bg-denim/10 uppercase tracking-widest text-[11px] transition-all">Refresh Results</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="recipeResults" class="space-y-4 pb-10">
+                <p class="text-center text-sm opacity-70 mt-8 font-serif italic" id="emptyRecipeState">Adjust your filters and tap "Find Recipes" to view your cookbook.</p>
+            </div>
+        </section>
+
+        <!-- ==================== SETTINGS TAB ==================== -->
+        <section id="tab-settings" class="hidden space-y-6">
+            <div class="rustic-card p-4 text-center">
+                <h2 class="font-serif font-bold text-xl mb-2 text-saddle border-b border-borderRustic pb-2">Offline Cookbooks</h2>
+                <p class="text-sm opacity-90 mb-3 mt-2 font-medium">Download recipe collections from your GitHub JSON catalog.</p>
+                
+                <!-- GitHub Catalog URL Input -->
+                <div class="text-left mb-4 bg-white p-3 rounded border border-borderRustic">
+                    <label class="block text-[11px] font-bold uppercase tracking-wide text-saddle mb-1">GitHub Catalog JSON URL</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="catalogUrlInput" placeholder="./recipes.json or https://username.github.io/pantry-chef/recipes.json" class="flex-grow p-2 rustic-input text-xs">
+                        <button onclick="saveCatalogUrl()" class="bg-saddle text-cream px-3 py-1.5 rounded text-xs font-bold uppercase">Save</button>
+                    </div>
+                    <p class="text-[10px] opacity-75 mt-1">Defaults to <b>./recipes.json</b> when hosted together on GitHub Pages.</p>
+                </div>
+
+                <button onclick="openCatalogModal()" class="w-full bg-denim text-cream font-bold py-3 rounded shadow mb-3 uppercase tracking-wide text-sm">Browse Catalogs (Sync Cloud)</button>
+                <button onclick="openManageModal()" class="w-full bg-transparent border-2 border-saddle text-saddle font-bold py-3 rounded shadow uppercase tracking-wide text-sm hover:bg-saddle/5">Manage Installed Recipes</button>
+            </div>
+
+            <div class="rustic-card p-4">
+                <h2 class="font-serif font-bold text-xl mb-4 text-saddle border-b border-borderRustic pb-2">Custom Appliances</h2>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="newApplianceInput" placeholder="e.g. Sous Vide" class="flex-grow p-2 rustic-input text-sm">
+                    <button onclick="addCustomAppliance()" class="bg-saddle text-cream px-4 py-2 rounded text-sm font-bold uppercase">Add</button>
+                </div>
+                <div id="customApplianceList" class="space-y-2">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== CUSTOM MODALS / TOAST ==================== -->
+    
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="hidden fixed inset-0 bg-darkText/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-cream rounded-md w-full max-w-sm p-5 border border-saddle shadow-2xl text-center">
+            <h3 class="font-serif font-bold text-lg text-saddle mb-2">Confirm Action</h3>
+            <p id="confirmMessage" class="text-sm mb-6 text-darkText">Are you sure?</p>
+            <div class="flex justify-center gap-3">
+                <button onclick="closeConfirmModal()" class="px-5 py-2 rounded border border-borderRustic text-darkText font-bold bg-white text-sm uppercase tracking-wide shadow-sm hover:bg-gray-50">Cancel</button>
+                <button id="confirmBtnAction" class="px-5 py-2 rounded bg-brick text-cream font-bold text-sm uppercase tracking-wide shadow-sm hover:opacity-90">Yes, Do It</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastContainer" class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-saddle text-cream px-4 py-2 rounded shadow-xl text-sm font-bold z-50 whitespace-nowrap">
+        <!-- Toast message -->
+    </div>
+    
+    <!-- Catalog Modal -->
+    <div id="catalogModal" class="hidden fixed inset-0 bg-darkText/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-cream rounded-md w-full max-w-md max-h-[80vh] flex flex-col border border-saddle shadow-2xl">
+            <div class="p-4 border-b border-borderRustic flex justify-between items-center bg-saddle text-cream rounded-t-md">
+                <div>
+                    <h3 class="font-serif font-bold text-lg">Cloud Catalogs</h3>
+                    <p id="catalogSyncStatus" class="text-[10px] opacity-80">Checking cloud...</p>
+                </div>
+                <button onclick="closeModal('catalogModal')" class="text-2xl leading-none hover:opacity-70">&times;</button>
+            </div>
+            <div id="catalogList" class="p-4 overflow-y-auto space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- Manage Packs Modal -->
+    <div id="manageModal" class="hidden fixed inset-0 bg-darkText/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-cream rounded-md w-full max-w-md max-h-[80vh] flex flex-col border border-saddle shadow-2xl">
+            <div class="p-4 border-b border-borderRustic flex justify-between items-center bg-saddle text-cream rounded-t-md">
+                <h3 class="font-serif font-bold text-lg">Installed Recipes</h3>
+                <button onclick="closeModal('manageModal')" class="text-2xl leading-none hover:opacity-70">&times;</button>
+            </div>
+            <div id="manageList" class="p-4 overflow-y-auto space-y-3 flex-grow"></div>
+            <div class="p-4 border-t border-borderRustic bg-white rounded-b-md">
+                <button onclick="triggerClearOfflineRecipes()" class="w-full bg-brick text-cream font-bold py-3 rounded shadow-sm hover:opacity-90 uppercase tracking-widest text-sm">Delete All Downloads</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipe Detail Modal -->
+    <div id="recipeDetailModal" class="hidden fixed inset-0 bg-darkText/90 z-50 flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-cream rounded-xl w-full max-w-lg max-h-[90vh] flex flex-col border-2 border-saddle shadow-2xl overflow-hidden relative">
+            <button onclick="closeModal('recipeDetailModal')" class="absolute top-2 right-2 bg-saddle/80 text-cream rounded-full w-8 h-8 flex items-center justify-center text-xl font-bold z-10 hover:bg-saddle">&times;</button>
+            
+            <div class="w-full h-48 sm:h-56 bg-borderRustic overflow-hidden shrink-0">
+                <img id="detailImage" src="" alt="Recipe" class="w-full h-full object-cover">
+            </div>
+            
+            <div class="p-4 sm:p-5 overflow-y-auto flex-grow flex flex-col gap-4">
+                <div class="border-b border-borderRustic pb-3">
+                    <h3 id="detailTitle" class="font-serif font-bold text-2xl leading-tight text-saddle mb-2"></h3>
+                    <div class="flex gap-2 flex-wrap">
+                        <span id="detailAppliance" class="text-[10px] uppercase font-bold bg-saddle text-cream px-2 py-1 rounded shadow-sm"></span>
+                        <span id="detailMeal" class="text-[10px] uppercase font-bold bg-denim text-cream px-2 py-1 rounded shadow-sm"></span>
+                    </div>
+                    <p id="detailDescription" class="text-xs sm:text-sm text-darkText mt-3 leading-relaxed"></p>
+                    <div id="detailMixMagicBox" class="hidden mt-2.5 bg-white border-l-4 border-denim p-2.5 rounded text-xs text-darkText">
+                        <span class="font-bold text-saddle uppercase tracking-wide">Mix & Match Magic: </span>
+                        <span id="detailMixMagic"></span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-3 rounded-lg border border-borderRustic shadow-inner">
+                    <h4 class="font-bold text-xs uppercase tracking-wide text-saddle mb-2 border-b border-borderRustic/50 pb-1">Ingredients & Measurements</h4>
+                    <div id="detailIngredients" class="space-y-1.5">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-xs uppercase tracking-wide text-saddle mb-2 border-b border-borderRustic pb-1">Instructions</h4>
+                    <ul id="detailInstructions" class="list-decimal pl-5 text-sm space-y-2.5 text-darkText font-medium leading-relaxed">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        // --- CLOUD CATALOG CONFIGURATION ---
+        // When index.html and recipes.json are in the same GitHub repo, './recipes.json' works automatically.
+        // Or paste your full GitHub Pages URL (e.g. 'https://username.github.io/pantry-chef/recipes.json').
+        const DEFAULT_CATALOG_URL = "./recipes.json";
+
+        // --- DATA DICTIONARIES ---
+        const STAPLES = ["salt", "black pepper", "pepper", "olive oil", "oil", "water", "butter", "sugar", "garlic", "garlic powder", "onion powder", "flour", "cooking spray"];
+        
+        const SUBSTITUTIONS = {
+            "buttermilk": ["milk"],
+            "heavy cream": ["milk", "butter"],
+            "sour cream": ["greek yogurt", "yogurt"],
+            "chicken broth": ["water", "beef broth"],
+            "beef broth": ["chicken broth", "water"],
+            "breadcrumbs": ["flour", "oats"],
+            "spaghetti": ["pasta", "egg noodles"],
+            "pasta": ["spaghetti", "egg noodles"]
+        };
+
+        const CORE_RECIPES = [
+            {
+                name: "Pan-Seared Country Seasoned Chicken Breast with Butter Sauce",
+                description: "Simple country-inspired seasoning tossed with the tiniest amount of flour so the chicken gets a lovely golden crust, served with a butter sauce made in the same pan to capture every bit of residual seasoning.",
+                mixAndMatch: "Skip the sauce and just serve the seasoned chicken, or skip the spices and let the butter sauce shine with a simple salt-and-pepper seared chicken.",
+                ingredients: [
+                    "Chicken Breast — 2 large (250–300g / 8–10 oz each), cut in half horizontally to form 4 steaks",
+                    "Butter — 3 1/2 tbsp (50g) unsalted butter, divided (20g for searing + 30g for pan sauce)",
+                    "Flour — 1 1/2 tbsp plain / all-purpose flour (or GF)",
+                    "Paprika — 1 tsp regular, sweet, or smoky paprika + 1/4 tsp cumin",
+                    "Garlic Powder — 1/2 tsp garlic powder + 1/2 tsp onion powder",
+                    "Salt — 3/4 tsp kosher / cooking salt + 1/8 tsp black pepper",
+                    "Chicken Broth — 1/3 cup (80ml) low-sodium chicken stock or dry white wine (sub water)"
+                ],
+                instructions: [
+                    "Abbreviated: Dust chicken with Seasoning, pan fry in the butter, remove. Deglaze with wine or stock, melt in butter, serve sauce on chicken.",
+                    "Season: Mix the paprika, onion powder, garlic powder, cumin, salt, black pepper, and flour in a bowl. Sprinkle on each side of the chicken steaks, spreading with fingertips to coat evenly, then shake off excess.",
+                    "Sear: Melt 1 1/2 tbsp (20g) butter in a large non-stick pan over high heat. Cook chicken for 2 1/2 minutes on each side until deep golden, or until the internal temperature reaches 153°F / 67°C. Remove onto a plate.",
+                    "Pan Sauce: Lower the heat to medium-high. Add the 1/3 cup (80ml) chicken stock or wine and simmer rapidly for 1 to 1 1/2 minutes, scraping the pan with a rubber spatula to loosen the golden bits into the sauce until reduced by half. Add the remaining 2 tbsp (30g) butter and swirl until melted and glossy.",
+                    "Serve: Spoon the pan butter sauce over the chicken and sprinkle with chopped parsley if desired."
+                ],
+                appliance: "Stovetop",
+                mealType: "Dinner",
+                dishType: "Main Dish",
+                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Country+Pan+Chicken"
+            },
+            {
+                name: "Farmhouse Chicken & Crispy Potato Sheet-Pan Bake",
+                description: "Juicy roasted chicken breasts cooked alongside blistered, golden-edged diced potatoes and sweet carrots on a single sheet pan.",
+                mixAndMatch: "Swap potatoes for sweet potatoes, or scatter shredded cheddar over the vegetables during the final 3 minutes of baking.",
+                ingredients: [
+                    "Chicken Breast — 2 large boneless breasts (1 lb / 450g total)",
+                    "Potatoes — 3 cups (450g) Yukon Gold or Russet potatoes, cut into 3/4-inch (2cm) cubes",
+                    "Carrots — 2 medium carrots (1 cup / 125g), sliced into 1/2-inch coins",
+                    "Garlic — 3 cloves garlic, finely minced",
+                    "Olive Oil — 2 1/2 tbsp (35ml) olive oil (or melted butter)",
+                    "Salt — 1 tsp kosher salt + 1/2 tsp coarse black pepper"
+                ],
+                instructions: [
+                    "Preheat & Head-Start Roast: Preheat oven to 425°F (220°C). Toss cubed potatoes and carrots on a large rimmed baking sheet with 1 1/2 tbsp olive oil, half the minced garlic, salt, and pepper. Roast for 15 minutes.",
+                    "Season & Add Chicken: Rub chicken breasts with remaining 1 tbsp olive oil, garlic, salt, and pepper. Push vegetables to the edges and place chicken in the center of the hot sheet pan.",
+                    "Bake: Roast 18–20 minutes until the chicken reaches 165°F (74°C) and the potatoes are golden and crisp on the edges. Rest 5 minutes before slicing."
+                ],
+                appliance: "Oven",
+                mealType: "Dinner",
+                dishType: "Bake",
+                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Chicken+Bake"
+            },
+            {
+                name: "Rustic Farmhouse Breakfast Scramble",
+                description: "Fluffy pasture-style eggs folded with smoky crisped bacon, sweet onions, and melted sharp cheddar cheese in one warm skillet.",
+                mixAndMatch: "Serve spooned over pan-crisped diced potatoes or tucked into warm flour tortillas for breakfast tacos.",
+                ingredients: [
+                    "Eggs — 4 large eggs",
+                    "Milk — 2 tbsp (30ml) whole milk (or heavy cream)",
+                    "Cheddar Cheese — 1/2 cup (60g) shredded sharp cheddar cheese",
+                    "Bacon — 3 thick slices bacon, chopped into 1/2-inch pieces",
+                    "Butter — 1 tbsp (14g) unsalted butter",
+                    "Salt — 1/4 tsp kosher salt + 1/8 tsp black pepper"
+                ],
+                instructions: [
+                    "Crisp Bacon: Fry chopped bacon in a non-stick skillet over medium heat for 4–5 minutes until crispy, then transfer to a paper towel-lined plate and pour off excess drippings.",
+                    "Whisk Custard: In a bowl, whisk the 4 eggs with 2 tbsp milk, salt, and black pepper until frothy.",
+                    "Soft Scramble: Melt 1 tbsp butter in the warm skillet over medium-low heat. Pour in the eggs and gently push curds from the edges toward the center with a spatula for 2–3 minutes.",
+                    "Fold & Melt: Remove from heat while the eggs are still glossy, and fold in the shredded cheddar and crispy bacon."
+                ],
+                appliance: "Stovetop",
+                mealType: "Breakfast",
+                dishType: "Main Dish",
+                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Breakfast+Scramble"
+            },
+            {
+                name: "Country Store Skillet Spaghetti & Rich Meat Sauce",
+                description: "Hearty browned ground beef simmered with sweet onions, fresh garlic, and tomatoes, ladled over tender spaghetti.",
+                mixAndMatch: "Top with grated parmesan or melt mozzarella over the skillet and broil for 2 minutes for a baked trattoria finish.",
+                ingredients: [
+                    "Spaghetti — 12 oz (340g) spaghetti or preferred pasta",
+                    "Ground Beef — 1 lb (450g) lean ground beef (or Italian sausage)",
+                    "Diced Tomatoes — 1 can (28 oz / 800g) diced or crushed tomatoes",
+                    "Onions — 1 medium yellow onion (1 cup / 120g), finely chopped",
+                    "Garlic — 3 cloves garlic, minced",
+                    "Olive Oil — 1 tbsp (15ml) olive oil + 1 tsp kosher salt & black pepper"
+                ],
+                instructions: [
+                    "Boil Pasta: Bring a large pot of salted water to a boil and cook spaghetti for 9–11 minutes until al dente. Reserve 1/2 cup starchy pasta water before draining.",
+                    "Brown Beef & Aromatics: Heat 1 tbsp olive oil in a deep skillet over medium-high heat. Brown the ground beef and chopped onions together for 6–7 minutes, breaking up the meat. Stir in minced garlic for 1 minute.",
+                    "Simmer Sauce: Pour in the diced or crushed tomatoes, season with salt and pepper, and simmer uncovered on medium-low for 15 minutes until rich and thickened.",
+                    "Toss & Serve: Toss the drained spaghetti directly in the sauce with a splash of pasta water so the sauce clings to every strand."
+                ],
+                appliance: "Stovetop",
+                mealType: "Dinner",
+                dishType: "Main Dish",
+                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Spaghetti"
+            },
+            {
+                name: "Cast-Iron Garlic Butter Steak & Blistered Bell Peppers",
+                description: "Thick-cut steak seared in a blazing cast-iron skillet, basted in foaming garlic butter, and served alongside sweet charred bell peppers and onions.",
+                mixAndMatch: "Slice thin over steamed white rice or tuck into warm tortillas with melted cheese for steak fajitas.",
+                ingredients: [
+                    "Steak — 1 lb (450g) ribeye, strip, or sirloin steak (1 to 1.25-inch thick)",
+                    "Bell Peppers — 2 medium bell peppers (2 cups / 250g), sliced into 1/2-inch strips",
+                    "Onions — 1 medium onion (1 cup / 120g), sliced into half-moons",
+                    "Butter — 2 1/2 tbsp (35g) unsalted butter, divided",
+                    "Garlic — 3 cloves garlic, lightly smashed",
+                    "Salt — 1 tsp kosher salt + 1/2 tsp coarse black pepper"
+                ],
+                instructions: [
+                    "Season Steak: Pat the steak thoroughly dry with paper towels and season generously on both sides with salt and black pepper.",
+                    "Sear & Butter-Baste: Heat a cast-iron skillet over high heat until smoking. Melt 1 1/2 tbsp butter, lay in the steak and smashed garlic, and sear 3–4 minutes per side for medium-rare (130°F / 54°C), spooning butter over top. Transfer to a cutting board to rest.",
+                    "Char Veggies: Add the remaining 1 tbsp butter to the hot skillet. Toss in sliced bell peppers and onions and sear 4–5 minutes until tender-crisp and blistered.",
+                    "Slice & Serve: Slice the rested steak against the grain and serve over the warm peppers and onions."
+                ],
+                appliance: "Stovetop",
+                mealType: "Dinner",
+                dishType: "Main Dish",
+                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Garlic+Butter+Steak"
+            },
+            {
+                name: "Pan-Seared Honey-Garlic Salmon & Broccoli Skillet",
+                description: "Crispy-skinned salmon fillets glazed in a savory honey-garlic-soy pan reduction with tender-crisp steamed broccoli.",
+                mixAndMatch: "Swap salmon for shrimp or cod, and serve with fluffy white or brown rice to soak up the extra glaze.",
+                ingredients: [
+                    "Salmon — 2 salmon fillets (6 oz / 170g each)",
+                    "Broccoli — 3 cups (250g) fresh broccoli florets",
+                    "Butter — 2 tbsp (30g) unsalted butter",
+                    "Garlic — 3 cloves garlic, finely minced",
+                    "Soy Sauce — 2 tbsp (30ml) soy sauce",
+                    "Honey — 2 tbsp (30ml) honey"
+                ],
+                instructions: [
+                    "Steam-Crisp Broccoli: Melt 1 tbsp butter in a large skillet over medium-high heat. Add broccoli florets and 3 tbsp water, cover for 3 minutes until bright green and tender-crisp, then transfer to plates.",
+                    "Sear Salmon: Melt remaining 1 tbsp butter in the skillet. Season salmon with salt and pepper and sear skin-side down for 4 minutes until crisp, then flip for 2 minutes.",
+                    "Glaze: Add minced garlic, 2 tbsp soy sauce, and 2 tbsp honey directly to the pan. Simmer 1–2 minutes, spooning the bubbling glaze over the salmon."
+                ],
+                appliance: "Stovetop",
+                mealType: "Dinner",
+                dishType: "Main Dish",
+                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Honey+Garlic+Salmon"
+            },
+            {
+                name: "Baked Three-Layer Cheesy Garlic Pasta Casserole",
+                description: "Tender short pasta folded into a rich homemade garlic-butter cheddar Mornay sauce and baked until golden and bubbling.",
+                mixAndMatch: "Stir in browned ground beef, crumbled bacon, or steamed broccoli florets right before baking.",
+                ingredients: [
+                    "Pasta — 8 oz (225g) penne, rigatoni, or elbow macaroni",
+                    "Cheddar Cheese — 1 1/2 cups (175g) shredded sharp cheddar cheese, divided",
+                    "Milk — 1 1/2 cups (375ml) warm whole milk",
+                    "Butter — 2 tbsp (30g) unsalted butter",
+                    "Flour — 2 tbsp (20g) all-purpose flour",
+                    "Garlic — 2 cloves garlic, minced"
+                ],
+                instructions: [
+                    "Boil Pasta: Preheat oven to 375°F (190°C). Boil pasta in salted water for 1 minute less than package directions, then drain.",
+                    "Build Garlic Roux: Melt 2 tbsp butter in an oven-safe skillet over medium heat. Whisk in minced garlic and 2 tbsp flour for 1 minute until fragrant.",
+                    "Make Cheese Sauce: Slowly whisk in 1 1/2 cups warm milk and simmer 3 minutes until thickened. Off the heat, stir in 1 cup of the cheddar, 1/2 tsp salt, and black pepper until smooth.",
+                    "Bake: Fold in the drained pasta, top with the remaining 1/2 cup cheddar, and bake 15–18 minutes until bubbling and golden brown."
+                ],
+                appliance: "Oven",
+                mealType: "Dinner",
+                dishType: "Bake",
+                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Cheesy+Pasta+Bake"
+            },
+            {
+                name: "Slow-Simmered Country Beef & Potato Stew",
+                description: "Tender browned ground beef or chuck roast simmered low and slow with chunks of potato, carrots, and sweet onions in a savory gravy.",
+                mixAndMatch: "Stir in a splash of heavy cream or a handful of shredded cheddar right before serving.",
+                ingredients: [
+                    "Ground Beef — 1 lb (450g) lean ground beef (or cubed Beef Chuck Roast)",
+                    "Potatoes — 3 medium potatoes (3 cups / 450g), peeled and cut into 1-inch chunks",
+                    "Carrots — 3 medium carrots (1.5 cups / 180g), cut into thick chunks",
+                    "Onions — 1 large yellow onion (1 cup / 150g), diced",
+                    "Beef Broth — 2 cups (480ml) beef broth",
+                    "Flour — 2 tbsp (20g) all-purpose flour",
+                    "Garlic — 2 cloves garlic, minced"
+                ],
+                instructions: [
+                    "Brown the Meat: In a skillet over medium-high heat, brown the beef and diced onions together for 5–6 minutes. Stir in minced garlic and 2 tbsp flour for 1 minute.",
+                    "Load Slow Cooker: Transfer the beef mixture to the slow cooker. Add cubed potatoes, carrots, and 2 cups beef broth, stirring well to dissolve the flour.",
+                    "Simmer: Cover and cook on LOW for 6 hours (or HIGH for 3 hours) until the potatoes and carrots are fork-tender and the broth thickens into a rich gravy."
+                ],
+                appliance: "Slow Cooker",
+                mealType: "Dinner",
+                dishType: "Main Dish",
+                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Country+Beef+Stew"
+            },
+            {
+                name: "Air Fryer Crispy Garlic-Parmesan Pork Chops",
+                description: "Juicy bone-in or boneless pork chops coated in a savory garlic-herb crust and air-fried to golden perfection in 12 minutes.",
+                mixAndMatch: "Use the same seasoning crust on chicken thighs or chicken breasts.",
+                ingredients: [
+                    "Pork Chops — 2 thick-cut pork chops (8 oz / 225g each)",
+                    "Breadcrumbs — 1/3 cup (35g) breadcrumbs or panko (sub 2 tbsp flour)",
+                    "Olive Oil — 1 tbsp (15ml) olive oil or melted butter",
+                    "Garlic Powder — 1 tsp garlic powder + 1 tsp paprika",
+                    "Salt — 3/4 tsp kosher salt + 1/4 tsp black pepper"
+                ],
+                instructions: [
+                    "Preheat Air Fryer: Preheat air fryer to 400°F (200°C) for 3 minutes.",
+                    "Coat Chops: Rub pork chops evenly with 1 tbsp olive oil. Mix breadcrumbs, garlic powder, paprika, salt, and pepper in a shallow dish and press onto both sides of the chops.",
+                    "Air Fry: Cook at 400°F (200°C) for 10–12 minutes, flipping halfway through, until golden crisp and internal temperature reaches 145°F (63°C). Rest 5 minutes before serving."
+                ],
+                appliance: "Air Fryer",
+                mealType: "Dinner",
+                dishType: "Main Dish",
+                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Crispy+Pork+Chops"
+            }
+        ];
+
+        // Built-in fallback catalog (used if offline or before recipes.json is reachable)
+        let CLOUD_CATALOG = [
+            {
+                id: "pack_bbq",
+                name: "Backyard BBQ & Smoker Pack",
+                description: "Low-and-slow smoker and grill favorites with exact pitmaster measurements.",
+                recipes: [
+                    {
+                        name: "Smoked Pulled Pork Shoulder",
+                        description: "Classic low-and-slow hardwood smoked pork shoulder rubbed with brown sugar and paprika, finished with a tangy apple cider vinegar mop.",
+                        mixAndMatch: "Pile high on toasted buns or serve over baked sweet potatoes.",
+                        ingredients: [
+                            "Pork Shoulder — 4 to 5 lb (2kg) bone-in or boneless pork butt",
+                            "Brown Sugar — 1/4 cup (50g) packed brown sugar",
+                            "Paprika — 2 tbsp smoked paprika + 1 tbsp garlic powder",
+                            "Salt — 1 1/2 tbsp kosher salt + 1 tsp coarse black pepper",
+                            "Apple Cider Vinegar — 1/2 cup (120ml) apple cider vinegar for spritzing & finishing"
+                        ],
+                        instructions: [
+                            "Dry Rub: Combine brown sugar, smoked paprika, garlic powder, kosher salt, and black pepper. Massage thoroughly over all sides of the pork shoulder.",
+                            "Smoke at 225°F: Preheat smoker to 225°F (107°C) with apple, hickory, or oak wood. Smoke uncovered for 5 hours, spritzing with apple cider vinegar every hour after the first 3 hours.",
+                            "Wrap & Finish: Wrap tightly in foil or butcher paper and continue cooking at 250°F (121°C) for 2–3 hours until internal temperature reaches 203°F (95°C) and a probe slides in like warm butter.",
+                            "Rest & Pull: Rest wrapped for 45–60 minutes, shred with two forks, and toss with the remaining splash of apple cider vinegar and pan juices."
+                        ],
+                        appliance: "Smoker",
+                        mealType: "Dinner",
+                        dishType: "Main Dish",
+                        image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Pulled+Pork"
+                    }
+                ]
+            },
+            {
+                id: "pack_sousvide",
+                name: "Sous Vide & Steakhouse Pack",
+                description: "Precision water-bath recipes for edge-to-edge tenderness and cast-iron searing.",
+                recipes: [
+                    {
+                        name: "Sous Vide Edge-to-Edge Juicy Garlic Butter Chicken Breast",
+                        description: "Water-bath cooking at 149°F transforms chicken breast into impossibly juicy meat, finished with a 60-second cast-iron butter sear.",
+                        mixAndMatch: "Pour the savory bag juices into the skillet after searing and swirl in an extra tablespoon of butter for an instant pan jus.",
+                        ingredients: [
+                            "Chicken Breast — 2 large boneless breasts (8–10 oz / 250–300g each)",
+                            "Butter — 2 tbsp (30g) unsalted butter, divided (1 tbsp in bag + 1 tbsp for sear)",
+                            "Garlic — 2 cloves garlic, smashed",
+                            "Salt — 3/4 tsp kosher salt + 1/4 tsp black pepper"
+                        ],
+                        instructions: [
+                            "Preheat Water Bath: Set your sous vide circulator to 149°F (65°C).",
+                            "Bag & Cook: Season chicken breasts with salt and pepper, seal in a vacuum or zip-top bag with 1 tbsp butter and smashed garlic, and cook submerged for 1.5 hours.",
+                            "Dry & Flash Sear: Remove chicken from the bag and pat completely dry with paper towels. Melt the remaining 1 tbsp butter in a smoking-hot cast-iron skillet over high heat and sear 60 seconds per side until golden brown."
+                        ],
+                        appliance: "Sous Vide",
+                        mealType: "Dinner",
+                        dishType: "Main Dish",
+                        image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Sous+Vide+Chicken"
+                    }
+                ]
+            }
+        ];
+
+        const DEFAULT_APPLIANCES = ["Oven", "Stovetop", "Smoker", "Sous Vide", "Instant Pot", "Grill", "Microwave", "Slow Cooker", "Air Fryer"];
+        let customAppliances = [];
+        let inventory = [];
+        let savedCustomIngredients = [];
+        let currentMatchedRecipes = []; // Holds the active search results
+
+        // --- INIT ---
+        window.onload = () => {
+            loadInventory();
+            loadAppliances();
+            loadCustomIngredients();
+            loadCatalogUrl();
+        };
+
+        // --- UI UTILITIES ---
+        function switchTab(tabId) {
+            const tabs = ['pantry', 'recipes', 'settings'];
+            tabs.forEach(t => {
+                document.getElementById('tab-' + t).classList.add('hidden');
+                const btn = document.getElementById('btn-' + t);
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            });
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('tab-inactive');
+            activeBtn.classList.add('tab-active');
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toastContainer');
+            toast.innerText = message;
+            toast.classList.remove('hidden');
+            toast.classList.remove('toast-anim');
+            void toast.offsetWidth; // trigger reflow
+            toast.classList.add('toast-anim');
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2900);
+        }
+
+        let currentConfirmAction = null;
+        function openConfirmModal(message, actionCallback) {
+            document.getElementById('confirmMessage').innerText = message;
+            currentConfirmAction = actionCallback;
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            currentConfirmAction = null;
+        }
+        document.getElementById('confirmBtnAction').addEventListener('click', () => {
+            if (currentConfirmAction) currentConfirmAction();
+            closeConfirmModal();
+        });
+
+        // --- PANTRY LOGIC ---
+        function loadInventory() {
+            const stored = localStorage.getItem('farmChef_inventory');
+            if (stored) {
+                inventory = JSON.parse(stored);
+            }
+            renderInventory();
+        }
+
+        function saveInventory() {
+            localStorage.setItem('farmChef_inventory', JSON.stringify(inventory));
+        }
+
+        function loadCustomIngredients() {
+            const stored = localStorage.getItem('farmChef_savedCustomItems');
+            if (stored) {
+                savedCustomIngredients = JSON.parse(stored);
+            }
+            renderCustomItemsList();
+        }
+
+        function renderCustomItemsList() {
+            const container = document.getElementById('customItemsContainer');
+            if (savedCustomIngredients.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            let html = '<div class="category-header sticky top-0 px-3 py-1.5 text-sm font-bold shadow-sm z-10 text-denim bg-cream border-denim/30">My Custom Items</div>';
+            savedCustomIngredients.forEach((item, index) => {
+                html += `
+                <div class="flex justify-between items-center border-b border-borderRustic/30 hover:bg-cream/50 pr-3">
+                    <label class="flex items-center gap-3 px-3 py-2 cursor-pointer flex-grow">
+                        <input type="checkbox" value="${item}" class="ingredient-cb w-4 h-4 accent-denim">
+                        <span class="text-sm font-medium text-denim">${item}</span>
+                    </label>
+                    <button onclick="removeSavedCustomItem(${index})" class="text-brick font-bold px-2 py-0.5 text-lg hover:opacity-80 leading-none">&times;</button>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function removeSavedCustomItem(index) {
+            savedCustomIngredients.splice(index, 1);
+            localStorage.setItem('farmChef_savedCustomItems', JSON.stringify(savedCustomIngredients));
+            renderCustomItemsList();
+        }
+
+        function addIngredient() {
+            const checkedBoxes = document.querySelectorAll('.ingredient-cb:checked');
+            const custom = document.getElementById('customIngredient').value.trim();
+            const loc = document.getElementById('ingredientLocation').value;
+            
+            let toAdd = [];
+            
+            // Gather selected items from the checkboxes
+            checkedBoxes.forEach(cb => {
+                toAdd.push(cb.value);
+            });
+            
+            // Include custom text if provided
+            if (custom) {
+                toAdd.push(custom);
+                const saveCheckbox = document.getElementById('saveCustomCheckbox');
+                if (saveCheckbox && saveCheckbox.checked) {
+                    if (!savedCustomIngredients.includes(custom)) {
+                        savedCustomIngredients.push(custom);
+                        localStorage.setItem('farmChef_savedCustomItems', JSON.stringify(savedCustomIngredients));
+                        renderCustomItemsList();
+                    }
+                    saveCheckbox.checked = false; // reset the checkbox
+                }
+            }
+
+            if (toAdd.length === 0) {
+                showToast("Please select or type an ingredient first.");
+                return;
+            }
+
+            const now = Date.now();
+            toAdd.forEach((name, index) => {
+                inventory.push({
+                    id: now.toString() + '-' + index,
+                    name: name,
+                    location: loc,
+                    dateAdded: now
+                });
+            });
+
+            // Clear inputs and selections
+            document.getElementById('customIngredient').value = '';
+            checkedBoxes.forEach(cb => cb.checked = false);
+            
+            saveInventory();
+            renderInventory();
+            showToast(`Added ${toAdd.length} item(s) to ${loc}!`);
+        }
+
+        function updateIngredientLocation(id, newLoc) {
+            const item = inventory.find(i => i.id === id);
+            if (item) {
+                item.location = newLoc;
+                saveInventory();
+                renderInventory();
+                showToast(`Moved ${item.name} to ${newLoc}!`);
+            }
+        }
+
+        function removeIngredient(id) {
+            inventory = inventory.filter(i => i.id !== id);
+            saveInventory();
+            renderInventory();
+        }
+
+        function triggerClearInventory() {
+            openConfirmModal("Are you sure you want to clear your entire pantry stock?", () => {
+                inventory = [];
+                saveInventory();
+                renderInventory();
+                showToast("Pantry cleared.");
+            });
+        }
+
+        function renderInventory() {
+            const list = document.getElementById('inventoryList');
+            if (inventory.length === 0) {
+                list.innerHTML = '<p class="text-sm opacity-70 italic text-center py-6 font-serif">Your storehouse is empty.</p>';
+                return;
+            }
+
+            const now = Date.now();
+            const msInDay = 24 * 60 * 60 * 1000;
+
+            list.innerHTML = inventory.slice().reverse().map(item => {
+                const daysOld = Math.floor((now - item.dateAdded) / msInDay);
+                const badgeColor = daysOld >= 7 ? 'bg-brick text-cream' : 'bg-borderRustic text-saddle';
+                const ageText = daysOld === 0 ? 'Fresh' : `${daysOld}d old`;
+                
+                const locColorMap = { 'Pantry': 'bg-pantry', 'Fridge': 'bg-fridge', 'Freezer': 'bg-freezer' };
+                const locBg = locColorMap[item.location] || 'bg-white';
+                
+                return `
+                <div class="flex justify-between items-center bg-white border border-borderRustic p-3 rounded shadow-sm">
+                    <div>
+                        <p class="font-bold text-sm text-darkText">${item.name}</p>
+                        <div class="flex gap-2 mt-1 items-center">
+                            <select onchange="updateIngredientLocation('${item.id}', this.value)" title="Tap to change location" class="text-[10px] uppercase tracking-wide font-bold ${locBg} text-darkText px-2 py-0.5 rounded cursor-pointer border border-borderRustic/60 focus:outline-none">
+                                <option value="Pantry" class="bg-white text-darkText" ${item.location === 'Pantry' ? 'selected' : ''}>Pantry</option>
+                                <option value="Fridge" class="bg-white text-darkText" ${item.location === 'Fridge' ? 'selected' : ''}>Fridge</option>
+                                <option value="Freezer" class="bg-white text-darkText" ${item.location === 'Freezer' ? 'selected' : ''}>Freezer</option>
+                            </select>
+                            <span class="text-[10px] uppercase tracking-wide font-bold ${badgeColor} px-2 py-0.5 rounded">${ageText}</span>
+                        </div>
+                    </div>
+                    <button onclick="removeIngredient('${item.id}')" class="text-cream font-bold px-2.5 py-1 bg-brick rounded shadow-sm hover:opacity-90">&times;</button>
+                </div>`;
+            }).join('');
+        }
+
+        // --- RECIPE LOGIC ---
+        function toggleApplianceMenu() {
+            const menu = document.getElementById('applianceMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function loadAppliances() {
+            const stored = localStorage.getItem('farmChef_customAppliances');
+            if (stored) customAppliances = JSON.parse(stored);
+            renderCustomAppliances();
+            renderApplianceMenu();
+        }
+
+        function renderApplianceMenu() {
+            const menu = document.getElementById('applianceMenu');
+            const allApps = [...DEFAULT_APPLIANCES, ...customAppliances];
+            
+            // Preserve checked state
+            const currentChecked = Array.from(menu.querySelectorAll('input:checked')).map(cb => cb.value);
+            const isAny = currentChecked.length === 0 || currentChecked.includes("Any");
+
+            let html = `<label class="flex items-center gap-2 text-sm p-1.5 font-medium border-b border-borderRustic mb-1"><input type="checkbox" value="Any" ${isAny ? 'checked' : ''} onchange="handleApplianceChange(this)"> Any / All</label>`;
+            
+            allApps.forEach(app => {
+                const checked = (!isAny && currentChecked.includes(app)) ? 'checked' : '';
+                html += `<label class="flex items-center gap-2 text-sm p-1 hover:bg-white rounded"><input type="checkbox" value="${app}" ${checked} onchange="handleApplianceChange(this)"> ${app}</label>`;
+            });
+            menu.innerHTML = html;
+        }
+
+        function addCustomAppliance() {
+            const input = document.getElementById('newApplianceInput');
+            const name = input.value.trim();
+            if (!name) return;
+            if (!customAppliances.includes(name) && !DEFAULT_APPLIANCES.includes(name)) {
+                customAppliances.push(name);
+                localStorage.setItem('farmChef_customAppliances', JSON.stringify(customAppliances));
+                input.value = '';
+                renderCustomAppliances();
+                renderApplianceMenu();
+                showToast("Appliance Added!");
+            } else {
+                input.value = ''; // clear if duplicate
+            }
+        }
+
+        function removeCustomAppliance(name) {
+            customAppliances = customAppliances.filter(a => a !== name);
+            localStorage.setItem('farmChef_customAppliances', JSON.stringify(customAppliances));
+            renderCustomAppliances();
+            renderApplianceMenu();
+            
+            // Update selected text on button just in case removed appliance was selected
+            handleApplianceChange({ value: 'force_update', checked: false }); 
+        }
+
+        function renderCustomAppliances() {
+            const list = document.getElementById('customApplianceList');
+            if (customAppliances.length === 0) {
+                list.innerHTML = '<p class="text-xs opacity-70 italic text-center py-2 font-serif">No custom appliances added yet.</p>';
+                return;
+            }
+            list.innerHTML = customAppliances.map(app => `
+                <div class="flex justify-between items-center bg-white border border-borderRustic p-2.5 rounded text-sm shadow-sm">
+                    <span class="font-bold text-darkText">${app}</span>
+                    <button onclick="removeCustomAppliance('${app}')" class="text-cream font-bold px-2 py-1 bg-brick rounded shadow-sm hover:opacity-90">&times;</button>
+                </div>
+            `).join('');
+        }
+
+        function handleApplianceChange(checkbox) {
+            const menu = document.getElementById('applianceMenu');
+            if (!menu) return;
+            const anyBox = menu.querySelector('input[value="Any"]');
+            if (!anyBox) return;
+
+            const others = menu.querySelectorAll('input:not([value="Any"])');
+            
+            if (checkbox.value === "Any" && checkbox.checked) {
+                others.forEach(cb => cb.checked = false);
+            } else if (checkbox.checked && checkbox.value !== 'force_update') {
+                anyBox.checked = false;
+            }
+
+            // Update button text
+            const checked = Array.from(menu.querySelectorAll('input:checked')).map(cb => cb.value);
+            const btn = document.getElementById('applianceBtn');
+            if (checked.length === 0 || checked.includes("Any")) {
+                anyBox.checked = true;
+                btn.innerText = "Any / All";
+            } else {
+                btn.innerText = checked.join(', ');
+            }
+        }
+
+        function generateRecipes(useOldest) {
+            if (inventory.length === 0) {
+                showToast("Your pantry is empty! Please stock up first.");
+                return;
+            }
+
+            const isStrict = document.getElementById('strictToggle').checked;
+            const mealType = document.getElementById('filterMeal').value;
+            const dishType = document.getElementById('filterDish').value;
+            
+            const selectedApps = Array.from(document.querySelectorAll('#applianceMenu input:checked')).map(cb => cb.value);
+            const hasAnyApp = selectedApps.includes('Any');
+
+            let offlineRecipes = JSON.parse(localStorage.getItem('farmChef_offlineRecipes')) || [];
+            let allRecipes = [...CORE_RECIPES, ...offlineRecipes];
+            let matchedRecipes = [];
+
+            const invNames = inventory.map(i => i.name.toLowerCase());
+
+            // Get oldest priority items
+            let topOldest = [];
+            if (useOldest) {
+                const locScore = { 'Fridge': 1, 'Pantry': 2, 'Freezer': 3 };
+                let sortedInv = [...inventory].sort((a, b) => {
+                    let sA = locScore[a.location] || 2;
+                    let sB = locScore[b.location] || 2;
+                    if (sA !== sB) return sA - sB;
+                    return a.dateAdded - b.dateAdded; // Oldest first
+                });
+                topOldest = sortedInv.slice(0, 3).map(i => i.name.toLowerCase());
+            }
+
+            allRecipes.forEach(recipe => {
+                // Filters
+                if (!hasAnyApp && recipe.appliance && !selectedApps.includes(recipe.appliance)) return;
+                if (mealType !== 'Any' && recipe.mealType && recipe.mealType !== mealType) return;
+                if (dishType !== 'Any' && recipe.dishType && recipe.dishType !== dishType) return;
+
+                let missing = [];
+                let found = [];
+
+                recipe.ingredients.forEach(req => {
+                    // Extract core ingredient name before "—" so measurement notes don't trigger false matches
+                    let coreReq = req.split('—')[0].trim().toLowerCase();
+                    
+                    // In Pantry? (Check user's inventory first)
+                    let exact = invNames.find(n => n.includes(coreReq) || coreReq.includes(n));
+                    if (exact) {
+                        found.push({ name: req, coreName: coreReq, sub: null });
+                        return;
+                    }
+
+                    // Is Staple?
+                    if (STAPLES.some(s => coreReq === s || coreReq.includes(s))) {
+                        found.push({ name: req, coreName: coreReq, sub: 'Staple' });
+                        return;
+                    }
+
+                    // Substitution Logic
+                    let didSub = false;
+                    for (const [orig, subs] of Object.entries(SUBSTITUTIONS)) {
+                        if (coreReq.includes(orig) || orig.includes(coreReq)) {
+                            for (let sub of subs) {
+                                if (invNames.find(n => n.includes(sub))) {
+                                    found.push({ name: req, coreName: coreReq, sub: sub });
+                                    didSub = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (didSub) break;
+                    }
+
+                    if (!didSub) missing.push(req);
+                });
+
+                // Check Strictness (Offline engine rule set)
+                if (isStrict && missing.length > 0) return;
+                if (!isStrict && missing.length > 4) return;
+
+                // Priority Check (Must use at least one old ingredient)
+                if (useOldest && topOldest.length > 0) {
+                    const usesOldest = found.some(f => {
+                        let n = (f.coreName || f.name).toLowerCase();
+                        let s = f.sub ? f.sub.toLowerCase() : null;
+                        return topOldest.some(o => o.includes(n) || n.includes(o) || (s && (o.includes(s) || s.includes(o))));
+                    });
+                    if (!usesOldest) return;
+                }
+
+                if (found.length > 0) {
+                    matchedRecipes.push({ ...recipe, foundList: found, missingList: missing });
+                }
+            });
+
+            // Sort by missing ingredients (most complete first)
+            matchedRecipes.sort((a, b) => a.missingList.length - b.missingList.length);
+            
+            // Store results globally and render
+            currentMatchedRecipes = matchedRecipes;
+            renderRecipes();
+        }
+
+        function refreshRecipes() {
+            if(currentMatchedRecipes.length === 0) return;
+            // Shuffle the current valid results
+            currentMatchedRecipes = currentMatchedRecipes.sort(() => Math.random() - 0.5);
+            renderRecipes();
+            showToast("Recipes shuffled!");
+        }
+
+        function renderRecipes() {
+            const container = document.getElementById('recipeResults');
+            const refreshBtn = document.getElementById('refreshBtn');
+            
+            if (currentMatchedRecipes.length === 0) {
+                refreshBtn.classList.add('hidden');
+                container.innerHTML = '<div class="p-6 bg-cream border-2 border-saddle text-center rounded shadow-sm"><p class="text-sm font-bold text-saddle">No recipes found matching your stock.</p><p class="text-xs mt-2 opacity-80">Try toggling off "Strict Match" for meal planning mode.</p></div>';
+                return;
+            }
+
+            // Show refresh button if there are recipes
+            if (currentMatchedRecipes.length > 1) {
+                refreshBtn.classList.remove('hidden');
+            } else {
+                refreshBtn.classList.add('hidden');
+            }
+
+            container.innerHTML = currentMatchedRecipes.map((r, index) => {
+                const missingCount = r.missingList.length;
+                const missingBadge = missingCount > 0 
+                    ? `<span class="bg-brick text-cream text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wide">Missing ${missingCount} items</span>` 
+                    : `<span class="bg-olive text-cream text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wide">100% Match</span>`;
+
+                return `
+                <div onclick="openRecipeModal(${index})" class="rustic-card p-4 border-2 border-borderRustic hover:border-denim hover:shadow-md transition-all cursor-pointer flex gap-4 items-center">
+                    <div class="w-20 h-20 bg-borderRustic rounded overflow-hidden flex-shrink-0 border border-saddle/20">
+                        <img src="${r.image || 'https://placehold.co/150x150/e2d5c4/455a64?text=Food'}" alt="${r.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col flex-grow">
+                        <h3 class="font-serif font-bold text-lg leading-tight text-saddle mb-1">${r.name}</h3>
+                        <div class="flex gap-2 mb-1.5 flex-wrap">
+                            <span class="text-[10px] uppercase font-bold bg-cream border border-saddle text-saddle px-2 py-0.5 rounded shadow-sm">${r.appliance || 'Any'}</span>
+                            ${missingBadge}
+                        </div>
+                        <p class="text-xs text-darkText opacity-85 line-clamp-2">${r.description || 'Tap to view measurements and instructions...'}</p>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // --- RECIPE DETAIL MODAL ---
+        function openRecipeModal(index) {
+            const recipe = currentMatchedRecipes[index];
+            if (!recipe) return;
+
+            // Populate text/images
+            document.getElementById('detailTitle').innerText = recipe.name;
+            document.getElementById('detailImage').src = recipe.image || 'https://placehold.co/600x400/e2d5c4/455a64?text=Food';
+            document.getElementById('detailAppliance').innerText = recipe.appliance || 'Any App';
+            document.getElementById('detailMeal').innerText = recipe.mealType || 'Any Meal';
+            document.getElementById('detailDescription').innerText = recipe.description || '';
+
+            const mixBox = document.getElementById('detailMixMagicBox');
+            const mixText = document.getElementById('detailMixMagic');
+            if (recipe.mixAndMatch) {
+                mixText.innerText = recipe.mixAndMatch;
+                mixBox.classList.remove('hidden');
+            } else {
+                mixBox.classList.add('hidden');
+            }
+
+            // Populate ingredients (Found vs Missing)
+            const ingredientsContainer = document.getElementById('detailIngredients');
+            let ingHTML = '';
+            
+            recipe.foundList.forEach(f => {
+                let note = '';
+                if (f.sub === 'Staple') note = ' <span class="opacity-60 font-normal italic">(Staple)</span>';
+                else if (f.sub) note = ` <span class="text-denim italic font-normal">(Sub: ${f.sub})</span>`;
+                
+                ingHTML += `
+                    <div class="flex items-start gap-2 text-sm text-olive font-bold py-0.5">
+                        <svg class="w-4 h-4 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                        <span>${f.name}${note}</span>
+                    </div>`;
+            });
+
+            recipe.missingList.forEach(m => {
+                ingHTML += `
+                    <div class="flex items-start gap-2 text-sm text-brick font-bold opacity-90 py-0.5">
+                        <svg class="w-4 h-4 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        <span>${m} (Missing)</span>
+                    </div>`;
+            });
+            ingredientsContainer.innerHTML = ingHTML;
+
+            // Populate Instructions
+            const instrContainer = document.getElementById('detailInstructions');
+            instrContainer.innerHTML = recipe.instructions.map(step => `<li>${step}</li>`).join('');
+
+            // Show Modal
+            document.getElementById('recipeDetailModal').classList.remove('hidden');
+        }
+
+        // --- SETTINGS / GITHUB CLOUD CATALOG SYNC ---
+        function loadCatalogUrl() {
+            const savedUrl = localStorage.getItem('farmChef_catalogUrl') || DEFAULT_CATALOG_URL;
+            const input = document.getElementById('catalogUrlInput');
+            if (input) input.value = savedUrl;
+        }
+
+        function saveCatalogUrl() {
+            const input = document.getElementById('catalogUrlInput');
+            const url = input.value.trim() || DEFAULT_CATALOG_URL;
+            localStorage.setItem('farmChef_catalogUrl', url);
+            showToast("Catalog URL saved!");
+        }
+
+        async function openCatalogModal() {
+            const list = document.getElementById('catalogList');
+            const status = document.getElementById('catalogSyncStatus');
+            const catalogUrl = localStorage.getItem('farmChef_catalogUrl') || DEFAULT_CATALOG_URL;
+
+            document.getElementById('catalogModal').classList.remove('hidden');
+            status.innerText = `Syncing from ${catalogUrl}...`;
+
+            try {
+                const response = await fetch(catalogUrl, { cache: 'no-store' });
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const data = await response.json();
+                const remotePacks = Array.isArray(data) ? data : (data.packs || []);
+                if (remotePacks.length > 0) {
+                    CLOUD_CATALOG = remotePacks;
+                    localStorage.setItem('farmChef_cachedCatalog', JSON.stringify(remotePacks));
+                    status.innerText = `Synced live from GitHub (${remotePacks.length} packs available)`;
+                }
+            } catch (err) {
+                const cached = localStorage.getItem('farmChef_cachedCatalog');
+                if (cached) {
+                    CLOUD_CATALOG = JSON.parse(cached);
+                }
+                status.innerText = "Offline / Local Fallback Catalog Active";
+            }
+
+            list.innerHTML = CLOUD_CATALOG.map(p => `
+                <div class="border border-borderRustic p-4 rounded bg-white shadow-sm">
+                    <div class="flex justify-between items-start mb-1">
+                        <h4 class="font-bold text-base text-saddle">${p.name}</h4>
+                        <span class="text-[10px] font-bold uppercase bg-cream border border-borderRustic px-2 py-0.5 rounded">${(p.recipes || []).length} Recipes</span>
+                    </div>
+                    <p class="text-sm opacity-80 mb-4">${p.description}</p>
+                    <button onclick="downloadPack('${p.id}')" class="bg-denim text-cream text-xs font-bold px-4 py-2.5 rounded shadow hover:opacity-90 uppercase tracking-wider">Download / Update Pack</button>
+                </div>
+            `).join('');
+        }
+
+        function downloadPack(id) {
+            const pack = CLOUD_CATALOG.find(p => p.id === id);
+            if (!pack) return;
+
+            let existing = JSON.parse(localStorage.getItem('farmChef_offlineRecipes')) || [];
+            let count = 0;
+            
+            pack.recipes.forEach(r => {
+                const idx = existing.findIndex(e => e.name === r.name);
+                if (idx === -1) {
+                    existing.push(r);
+                    count++;
+                } else {
+                    existing[idx] = r; // Update existing recipe if edited on GitHub
+                }
+            });
+
+            localStorage.setItem('farmChef_offlineRecipes', JSON.stringify(existing));
+            closeModal('catalogModal');
+            
+            if(count > 0) {
+                showToast(`Successfully stocked ${count} new recipes!`);
+            } else {
+                showToast(`Cookbook synced with latest measurements!`);
+            }
+        }
+
+        function openManageModal() {
+            const list = document.getElementById('manageList');
+            let existing = JSON.parse(localStorage.getItem('farmChef_offlineRecipes')) || [];
+            
+            if (existing.length === 0) {
+                list.innerHTML = '<p class="text-sm opacity-70 italic font-serif text-center py-4">No extra recipe books downloaded.</p>';
+            } else {
+                list.innerHTML = existing.map((r, i) => `
+                    <div class="flex justify-between items-center bg-white border border-borderRustic p-3 rounded shadow-sm">
+                        <span class="text-sm font-bold truncate pr-2 text-darkText">${r.name}</span>
+                        <button onclick="removePackRecipe(${i})" class="text-cream font-bold px-2.5 py-1 bg-brick rounded shadow hover:opacity-90">&times;</button>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('manageModal').classList.remove('hidden');
+        }
+
+        function removePackRecipe(index) {
+            let existing = JSON.parse(localStorage.getItem('farmChef_offlineRecipes')) || [];
+            existing.splice(index, 1);
+            localStorage.setItem('farmChef_offlineRecipes', JSON.stringify(existing));
+            openManageModal(); // Re-render instantly
+        }
+
+        function triggerClearOfflineRecipes() {
+            openConfirmModal("Are you sure you want to delete all downloaded cookbooks?", () => {
+                localStorage.removeItem('farmChef_offlineRecipes');
+                openManageModal();
+                showToast("Downloads deleted.");
+            });
+        }
+
+        // --- SCANNER MODALS ---
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    </script>
+</body>
+</html>
