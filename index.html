@@ -2,8 +2,18 @@
 <html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Pantry Chef</title>
+
+    <!-- PWA & Native Mobile App Meta Tags (Android & iOS) -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#319795">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Pantry Chef">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23319795'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-weight='bold' font-size='240' fill='%23fcf9f2'%3EPC%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23319795'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-weight='bold' font-size='240' fill='%23fcf9f2'%3EPC%3C/text%3E%3C/svg%3E">
     
     <!-- Google Fonts: Merriweather for Headers, Inter for Body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,7 +52,10 @@
         body { 
             background: linear-gradient(rgba(245, 240, 230, 0.92), rgba(245, 240, 230, 0.92)), 
                         url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80') center/cover fixed;
-            color: #455a64; 
+            color: #455a64;
+            -webkit-tap-highlight-color: transparent;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .hidden { display: none !important; }
         
@@ -340,6 +353,13 @@
 
         <!-- ==================== SETTINGS TAB ==================== -->
         <section id="tab-settings" class="hidden space-y-6">
+            <!-- Install Mobile App Card (Auto-hides once running as a full-screen installed app) -->
+            <div id="installAppCard" class="rustic-card p-4 text-center">
+                <h2 class="font-serif font-bold text-xl mb-2 text-saddle border-b border-borderRustic pb-2">Install Mobile App</h2>
+                <p class="text-xs opacity-90 mb-3 mt-2 font-medium">Install Pantry Chef on your Android or iPhone home screen for full-screen offline use.</p>
+                <button onclick="triggerInstallApp()" class="w-full bg-saddle text-cream font-bold py-3 rounded shadow uppercase tracking-wide text-sm hover:opacity-90">Add App to Phone</button>
+            </div>
+
             <div class="rustic-card p-4 text-center">
                 <h2 class="font-serif font-bold text-xl mb-2 text-saddle border-b border-borderRustic pb-2">Offline Cookbooks</h2>
                 <p class="text-sm opacity-90 mb-3 mt-2 font-medium">Download recipe collections from your GitHub JSON catalog.</p>
@@ -351,7 +371,7 @@
                         <input type="text" id="catalogUrlInput" placeholder="./recipes.json or https://username.github.io/pantry-chef/recipes.json" class="flex-grow p-2 rustic-input text-xs">
                         <button onclick="saveCatalogUrl()" class="bg-saddle text-cream px-3 py-1.5 rounded text-xs font-bold uppercase">Save</button>
                     </div>
-                    <p class="text-[10px] opacity-75 mt-1">Defaults to <b>./recipes.json</b> when hosted together on GitHub Pages.</p>
+                    <p class="text-[10px] opacity-75 mt-1">Defaults to <b>./recipes.json</b> on GitHub Pages, or paste your full GitHub URL for wrapped APK/iOS apps.</p>
                 </div>
 
                 <button onclick="openCatalogModal()" class="w-full bg-denim text-cream font-bold py-3 rounded shadow mb-3 uppercase tracking-wide text-sm">Browse Catalogs (Sync Cloud)</button>
@@ -461,9 +481,48 @@
     <!-- ==================== JAVASCRIPT LOGIC ==================== -->
     <script>
         // --- CLOUD CATALOG CONFIGURATION ---
-        // When index.html and recipes.json are in the same GitHub repo, './recipes.json' works automatically.
-        // Or paste your full GitHub Pages URL (e.g. 'https://username.github.io/pantry-chef/recipes.json').
+        // Replace with your full 'https://YOUR-USERNAME.github.io/pantry-chef/recipes.json' URL when wrapping into a native APK/iOS app:
         const DEFAULT_CATALOG_URL = "./recipes.json";
+
+        // --- PWA & SERVICE WORKER REGISTRATION ---
+        let deferredInstallPrompt = null;
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+        });
+
+        function checkStandaloneMode() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            const installCard = document.getElementById('installAppCard');
+            if (isStandalone && installCard) {
+                installCard.classList.add('hidden');
+            }
+        }
+
+        async function triggerInstallApp() {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt();
+                const { outcome } = await deferredInstallPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    showToast("Installing Pantry Chef...");
+                }
+                deferredInstallPrompt = null;
+            } else {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                if (isIOS) {
+                    showToast("In Safari: Tap Share -> Add to Home Screen");
+                } else {
+                    showToast("In Chrome: Tap Menu (⋮) -> Add to Home screen");
+                }
+            }
+        }
 
         // --- DATA DICTIONARIES ---
         const STAPLES = ["salt", "black pepper", "pepper", "olive oil", "oil", "water", "butter", "sugar", "garlic", "garlic powder", "onion powder", "flour", "cooking spray"];
@@ -759,6 +818,7 @@
             loadAppliances();
             loadCustomIngredients();
             loadCatalogUrl();
+            checkStandaloneMode();
         };
 
         // --- UI UTILITIES ---
@@ -1276,108 +1336,3 @@
             const url = input.value.trim() || DEFAULT_CATALOG_URL;
             localStorage.setItem('farmChef_catalogUrl', url);
             showToast("Catalog URL saved!");
-        }
-
-        async function openCatalogModal() {
-            const list = document.getElementById('catalogList');
-            const status = document.getElementById('catalogSyncStatus');
-            const catalogUrl = localStorage.getItem('farmChef_catalogUrl') || DEFAULT_CATALOG_URL;
-
-            document.getElementById('catalogModal').classList.remove('hidden');
-            status.innerText = `Syncing from ${catalogUrl}...`;
-
-            try {
-                const response = await fetch(catalogUrl, { cache: 'no-store' });
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                const data = await response.json();
-                const remotePacks = Array.isArray(data) ? data : (data.packs || []);
-                if (remotePacks.length > 0) {
-                    CLOUD_CATALOG = remotePacks;
-                    localStorage.setItem('farmChef_cachedCatalog', JSON.stringify(remotePacks));
-                    status.innerText = `Synced live from GitHub (${remotePacks.length} packs available)`;
-                }
-            } catch (err) {
-                const cached = localStorage.getItem('farmChef_cachedCatalog');
-                if (cached) {
-                    CLOUD_CATALOG = JSON.parse(cached);
-                }
-                status.innerText = "Offline / Local Fallback Catalog Active";
-            }
-
-            list.innerHTML = CLOUD_CATALOG.map(p => `
-                <div class="border border-borderRustic p-4 rounded bg-white shadow-sm">
-                    <div class="flex justify-between items-start mb-1">
-                        <h4 class="font-bold text-base text-saddle">${p.name}</h4>
-                        <span class="text-[10px] font-bold uppercase bg-cream border border-borderRustic px-2 py-0.5 rounded">${(p.recipes || []).length} Recipes</span>
-                    </div>
-                    <p class="text-sm opacity-80 mb-4">${p.description}</p>
-                    <button onclick="downloadPack('${p.id}')" class="bg-denim text-cream text-xs font-bold px-4 py-2.5 rounded shadow hover:opacity-90 uppercase tracking-wider">Download / Update Pack</button>
-                </div>
-            `).join('');
-        }
-
-        function downloadPack(id) {
-            const pack = CLOUD_CATALOG.find(p => p.id === id);
-            if (!pack) return;
-
-            let existing = JSON.parse(localStorage.getItem('farmChef_offlineRecipes')) || [];
-            let count = 0;
-            
-            pack.recipes.forEach(r => {
-                const idx = existing.findIndex(e => e.name === r.name);
-                if (idx === -1) {
-                    existing.push(r);
-                    count++;
-                } else {
-                    existing[idx] = r; // Update existing recipe if edited on GitHub
-                }
-            });
-
-            localStorage.setItem('farmChef_offlineRecipes', JSON.stringify(existing));
-            closeModal('catalogModal');
-            
-            if(count > 0) {
-                showToast(`Successfully stocked ${count} new recipes!`);
-            } else {
-                showToast(`Cookbook synced with latest measurements!`);
-            }
-        }
-
-        function openManageModal() {
-            const list = document.getElementById('manageList');
-            let existing = JSON.parse(localStorage.getItem('farmChef_offlineRecipes')) || [];
-            
-            if (existing.length === 0) {
-                list.innerHTML = '<p class="text-sm opacity-70 italic font-serif text-center py-4">No extra recipe books downloaded.</p>';
-            } else {
-                list.innerHTML = existing.map((r, i) => `
-                    <div class="flex justify-between items-center bg-white border border-borderRustic p-3 rounded shadow-sm">
-                        <span class="text-sm font-bold truncate pr-2 text-darkText">${r.name}</span>
-                        <button onclick="removePackRecipe(${i})" class="text-cream font-bold px-2.5 py-1 bg-brick rounded shadow hover:opacity-90">&times;</button>
-                    </div>
-                `).join('');
-            }
-            document.getElementById('manageModal').classList.remove('hidden');
-        }
-
-        function removePackRecipe(index) {
-            let existing = JSON.parse(localStorage.getItem('farmChef_offlineRecipes')) || [];
-            existing.splice(index, 1);
-            localStorage.setItem('farmChef_offlineRecipes', JSON.stringify(existing));
-            openManageModal(); // Re-render instantly
-        }
-
-        function triggerClearOfflineRecipes() {
-            openConfirmModal("Are you sure you want to delete all downloaded cookbooks?", () => {
-                localStorage.removeItem('farmChef_offlineRecipes');
-                openManageModal();
-                showToast("Downloads deleted.");
-            });
-        }
-
-        // --- SCANNER MODALS ---
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-    </script>
-</body>
-</html>
