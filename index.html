@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Pantry Chef</title>
 
-    <!-- PWA & Native Mobile App Meta Tags (Android & iOS) -->
-    <link rel="manifest" href="./manifest.json">
+    <!-- Embedded Single-File Mobile App Meta Tags (No external manifest.json needed) -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Pantry Chef","short_name":"Pantry Chef","start_url":"./index.html","display":"standalone","background_color":"#fcf9f2","theme_color":"#319795"}'>
     <meta name="theme-color" content="#319795">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Pantry Chef">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23319795'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-weight='bold' font-size='240' fill='%23fcf9f2'%3EPC%3C/text%3E%3C/svg%3E">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23319795'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-weight='bold' font-size='240' fill='%23fcf9f2'%3EPC%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23319795'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-weight='bold' font-size='240' fill='%23fcf9f2'%3EPC%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23319795'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-weight='bold' font-size='240' fill='%23fcf9f2'%3EPC%3C/text%3E%3C/svg%3E">
     
     <!-- Google Fonts: Merriweather for Headers, Inter for Body -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:wght@400;700&display=swap)" rel="stylesheet">
     
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
     
     <script>
         tailwind.config = {
@@ -45,13 +45,13 @@
                     }
                 }
             }
-        }
+        };
     </script>
     <style>
         /* Rustic Country Store Theme */
         body { 
             background: linear-gradient(rgba(245, 240, 230, 0.92), rgba(245, 240, 230, 0.92)), 
-                        url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80') center/cover fixed;
+                        url('[https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80](https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80)') center/cover fixed;
             color: #455a64;
             -webkit-tap-highlight-color: transparent;
             padding-top: env(safe-area-inset-top);
@@ -129,9 +129,9 @@
             <p class="text-xs uppercase tracking-widest opacity-90 mt-1 font-sans">General Store & Kitchen</p>
         </div>
         <nav class="flex justify-around bg-cream">
-            <button onclick="switchTab('pantry')" id="btn-pantry" class="tab-active flex-1 py-3 text-sm font-sans uppercase tracking-wide transition-all">Pantry</button>
-            <button onclick="switchTab('recipes')" id="btn-recipes" class="tab-inactive flex-1 py-3 text-sm font-sans uppercase tracking-wide transition-all">Recipes</button>
-            <button onclick="switchTab('settings')" id="btn-settings" class="tab-inactive flex-1 py-3 text-sm font-sans uppercase tracking-wide transition-all">Settings</button>
+            <button type="button" onclick="switchTab('pantry')" id="btn-pantry" class="tab-active flex-1 py-3 text-sm font-sans uppercase tracking-wide transition-all">Pantry</button>
+            <button type="button" onclick="switchTab('recipes')" id="btn-recipes" class="tab-inactive flex-1 py-3 text-sm font-sans uppercase tracking-wide transition-all">Recipes</button>
+            <button type="button" onclick="switchTab('settings')" id="btn-settings" class="tab-inactive flex-1 py-3 text-sm font-sans uppercase tracking-wide transition-all">Settings</button>
         </nav>
     </header>
 
@@ -264,12 +264,12 @@
                         </select>
                     </div>
                     
-                    <button onclick="addIngredient()" class="bg-denim text-cream font-bold py-3 rounded mt-2 shadow-sm hover:opacity-90 uppercase tracking-wider text-sm transition-all">Add to Inventory</button>
+                    <button type="button" onclick="addIngredient()" class="bg-denim text-cream font-bold py-3 rounded mt-2 shadow-sm hover:opacity-90 uppercase tracking-wider text-sm transition-all">Add to Inventory</button>
                 </div>
                 
                 <div class="flex gap-2 mt-4 pt-4 border-t border-borderRustic">
-                    <button onclick="showToast('Scanner module would open here (Camera API)')" class="flex-1 border-2 border-denim text-denim font-bold py-2 rounded text-sm bg-transparent hover:bg-denim/10 transition-all">Scan Barcode</button>
-                    <button onclick="showToast('Receipt upload module would open here (OCR API)')" class="flex-1 border-2 border-denim text-denim font-bold py-2 rounded text-sm bg-transparent hover:bg-denim/10 transition-all">Scan Receipt</button>
+                    <button type="button" onclick="showToast('Scanner module would open here (Camera API)')" class="flex-1 border-2 border-denim text-denim font-bold py-2 rounded text-sm bg-transparent hover:bg-denim/10 transition-all">Scan Barcode</button>
+                    <button type="button" onclick="showToast('Receipt upload module would open here (OCR API)')" class="flex-1 border-2 border-denim text-denim font-bold py-2 rounded text-sm bg-transparent hover:bg-denim/10 transition-all">Scan Receipt</button>
                 </div>
             </div>
 
@@ -279,7 +279,7 @@
                         <h2 class="font-serif font-bold text-xl text-saddle">Current Stock</h2>
                         <p class="text-[11px] text-darkText opacity-75">Tap any location badge to move items between Pantry, Fridge, or Freezer.</p>
                     </div>
-                    <button onclick="triggerClearInventory()" class="text-xs text-brick underline font-bold hover:opacity-80">Clear All</button>
+                    <button type="button" onclick="triggerClearInventory()" class="text-xs text-brick underline font-bold hover:opacity-80">Clear All</button>
                 </div>
                 <div id="inventoryList" class="space-y-2">
                     <!-- Inventory items render here -->
@@ -305,7 +305,7 @@
                     <!-- Appliances -->
                     <div class="flex flex-col justify-center bg-white p-3 rounded border border-borderRustic relative">
                         <span class="text-xs font-bold mb-1 text-saddle uppercase tracking-wide">Appliances</span>
-                        <button onclick="toggleApplianceMenu()" id="applianceBtn" class="text-sm bg-cream border border-borderRustic rounded p-1.5 text-left truncate font-medium">Any / All</button>
+                        <button type="button" onclick="toggleApplianceMenu()" id="applianceBtn" class="text-sm bg-cream border border-borderRustic rounded p-1.5 text-left truncate font-medium">Any / All</button>
                         
                         <!-- Floating Appliance Modal -->
                         <div id="applianceMenu" class="hidden absolute top-[100%] left-0 w-full bg-cream border border-saddle shadow-xl z-50 max-h-48 overflow-y-auto mt-1 rounded p-2">
@@ -337,10 +337,10 @@
                 </div>
 
                 <div class="flex flex-col gap-3">
-                    <button onclick="generateRecipes(false)" class="bg-denim text-cream font-bold py-3 rounded shadow-sm hover:opacity-90 uppercase tracking-widest text-sm transition-all">Find Recipes</button>
+                    <button type="button" onclick="generateRecipes(false)" class="bg-denim text-cream font-bold py-3 rounded shadow-sm hover:opacity-90 uppercase tracking-widest text-sm transition-all">Find Recipes</button>
                     <div class="flex gap-2">
-                        <button onclick="generateRecipes(true)" class="flex-1 bg-saddle text-cream font-bold py-2 rounded shadow-sm hover:opacity-90 uppercase tracking-widest text-[11px] transition-all">Prioritize Oldest Food</button>
-                        <button onclick="refreshRecipes()" id="refreshBtn" class="hidden flex-1 border-2 border-denim text-denim bg-transparent font-bold py-2 rounded shadow-sm hover:bg-denim/10 uppercase tracking-widest text-[11px] transition-all">Refresh Results</button>
+                        <button type="button" onclick="generateRecipes(true)" class="flex-1 bg-saddle text-cream font-bold py-2 rounded shadow-sm hover:opacity-90 uppercase tracking-widest text-[11px] transition-all">Prioritize Oldest Food</button>
+                        <button type="button" onclick="refreshRecipes()" id="refreshBtn" class="hidden flex-1 border-2 border-denim text-denim bg-transparent font-bold py-2 rounded shadow-sm hover:bg-denim/10 uppercase tracking-widest text-[11px] transition-all">Refresh Results</button>
                     </div>
                 </div>
             </div>
@@ -353,13 +353,6 @@
 
         <!-- ==================== SETTINGS TAB ==================== -->
         <section id="tab-settings" class="hidden space-y-6">
-            <!-- Install Mobile App Card (Auto-hides once running as a full-screen installed app) -->
-            <div id="installAppCard" class="rustic-card p-4 text-center">
-                <h2 class="font-serif font-bold text-xl mb-2 text-saddle border-b border-borderRustic pb-2">Install Mobile App</h2>
-                <p class="text-xs opacity-90 mb-3 mt-2 font-medium">Install Pantry Chef on your Android or iPhone home screen for full-screen offline use.</p>
-                <button onclick="triggerInstallApp()" class="w-full bg-saddle text-cream font-bold py-3 rounded shadow uppercase tracking-wide text-sm hover:opacity-90">Add App to Phone</button>
-            </div>
-
             <div class="rustic-card p-4 text-center">
                 <h2 class="font-serif font-bold text-xl mb-2 text-saddle border-b border-borderRustic pb-2">Offline Cookbooks</h2>
                 <p class="text-sm opacity-90 mb-3 mt-2 font-medium">Download recipe collections from your GitHub JSON catalog.</p>
@@ -368,21 +361,21 @@
                 <div class="text-left mb-4 bg-white p-3 rounded border border-borderRustic">
                     <label class="block text-[11px] font-bold uppercase tracking-wide text-saddle mb-1">GitHub Catalog JSON URL</label>
                     <div class="flex gap-2">
-                        <input type="text" id="catalogUrlInput" placeholder="./recipes.json or https://username.github.io/pantry-chef/recipes.json" class="flex-grow p-2 rustic-input text-xs">
-                        <button onclick="saveCatalogUrl()" class="bg-saddle text-cream px-3 py-1.5 rounded text-xs font-bold uppercase">Save</button>
+                        <input type="text" id="catalogUrlInput" placeholder="./recipes.json or [https://username.github.io/pantry-chef/recipes.json](https://username.github.io/pantry-chef/recipes.json)" class="flex-grow p-2 rustic-input text-xs">
+                        <button type="button" onclick="saveCatalogUrl()" class="bg-saddle text-cream px-3 py-1.5 rounded text-xs font-bold uppercase">Save</button>
                     </div>
                     <p class="text-[10px] opacity-75 mt-1">Defaults to <b>./recipes.json</b> on GitHub Pages, or paste your full GitHub URL for wrapped APK/iOS apps.</p>
                 </div>
 
-                <button onclick="openCatalogModal()" class="w-full bg-denim text-cream font-bold py-3 rounded shadow mb-3 uppercase tracking-wide text-sm">Browse Catalogs (Sync Cloud)</button>
-                <button onclick="openManageModal()" class="w-full bg-transparent border-2 border-saddle text-saddle font-bold py-3 rounded shadow uppercase tracking-wide text-sm hover:bg-saddle/5">Manage Installed Recipes</button>
+                <button type="button" onclick="openCatalogModal()" class="w-full bg-denim text-cream font-bold py-3 rounded shadow mb-3 uppercase tracking-wide text-sm">Browse Catalogs (Sync Cloud)</button>
+                <button type="button" onclick="openManageModal()" class="w-full bg-transparent border-2 border-saddle text-saddle font-bold py-3 rounded shadow uppercase tracking-wide text-sm hover:bg-saddle/5">Manage Installed Recipes</button>
             </div>
 
             <div class="rustic-card p-4">
                 <h2 class="font-serif font-bold text-xl mb-4 text-saddle border-b border-borderRustic pb-2">Custom Appliances</h2>
                 <div class="flex gap-2 mb-4">
                     <input type="text" id="newApplianceInput" placeholder="e.g. Sous Vide" class="flex-grow p-2 rustic-input text-sm">
-                    <button onclick="addCustomAppliance()" class="bg-saddle text-cream px-4 py-2 rounded text-sm font-bold uppercase">Add</button>
+                    <button type="button" onclick="addCustomAppliance()" class="bg-saddle text-cream px-4 py-2 rounded text-sm font-bold uppercase">Add</button>
                 </div>
                 <div id="customApplianceList" class="space-y-2">
                     <!-- Populated by JS -->
@@ -399,8 +392,8 @@
             <h3 class="font-serif font-bold text-lg text-saddle mb-2">Confirm Action</h3>
             <p id="confirmMessage" class="text-sm mb-6 text-darkText">Are you sure?</p>
             <div class="flex justify-center gap-3">
-                <button onclick="closeConfirmModal()" class="px-5 py-2 rounded border border-borderRustic text-darkText font-bold bg-white text-sm uppercase tracking-wide shadow-sm hover:bg-gray-50">Cancel</button>
-                <button id="confirmBtnAction" class="px-5 py-2 rounded bg-brick text-cream font-bold text-sm uppercase tracking-wide shadow-sm hover:opacity-90">Yes, Do It</button>
+                <button type="button" onclick="closeConfirmModal()" class="px-5 py-2 rounded border border-borderRustic text-darkText font-bold bg-white text-sm uppercase tracking-wide shadow-sm hover:bg-gray-50">Cancel</button>
+                <button type="button" id="confirmBtnAction" class="px-5 py-2 rounded bg-brick text-cream font-bold text-sm uppercase tracking-wide shadow-sm hover:opacity-90">Yes, Do It</button>
             </div>
         </div>
     </div>
@@ -418,7 +411,7 @@
                     <h3 class="font-serif font-bold text-lg">Cloud Catalogs</h3>
                     <p id="catalogSyncStatus" class="text-[10px] opacity-80">Checking cloud...</p>
                 </div>
-                <button onclick="closeModal('catalogModal')" class="text-2xl leading-none hover:opacity-70">&times;</button>
+                <button type="button" onclick="closeModal('catalogModal')" class="text-2xl leading-none hover:opacity-70">&times;</button>
             </div>
             <div id="catalogList" class="p-4 overflow-y-auto space-y-4"></div>
         </div>
@@ -429,11 +422,11 @@
         <div class="bg-cream rounded-md w-full max-w-md max-h-[80vh] flex flex-col border border-saddle shadow-2xl">
             <div class="p-4 border-b border-borderRustic flex justify-between items-center bg-saddle text-cream rounded-t-md">
                 <h3 class="font-serif font-bold text-lg">Installed Recipes</h3>
-                <button onclick="closeModal('manageModal')" class="text-2xl leading-none hover:opacity-70">&times;</button>
+                <button type="button" onclick="closeModal('manageModal')" class="text-2xl leading-none hover:opacity-70">&times;</button>
             </div>
             <div id="manageList" class="p-4 overflow-y-auto space-y-3 flex-grow"></div>
             <div class="p-4 border-t border-borderRustic bg-white rounded-b-md">
-                <button onclick="triggerClearOfflineRecipes()" class="w-full bg-brick text-cream font-bold py-3 rounded shadow-sm hover:opacity-90 uppercase tracking-widest text-sm">Delete All Downloads</button>
+                <button type="button" onclick="triggerClearOfflineRecipes()" class="w-full bg-brick text-cream font-bold py-3 rounded shadow-sm hover:opacity-90 uppercase tracking-widest text-sm">Delete All Downloads</button>
             </div>
         </div>
     </div>
@@ -441,7 +434,7 @@
     <!-- Recipe Detail Modal -->
     <div id="recipeDetailModal" class="hidden fixed inset-0 bg-darkText/90 z-50 flex items-center justify-center p-2 sm:p-4">
         <div class="bg-cream rounded-xl w-full max-w-lg max-h-[90vh] flex flex-col border-2 border-saddle shadow-2xl overflow-hidden relative">
-            <button onclick="closeModal('recipeDetailModal')" class="absolute top-2 right-2 bg-saddle/80 text-cream rounded-full w-8 h-8 flex items-center justify-center text-xl font-bold z-10 hover:bg-saddle">&times;</button>
+            <button type="button" onclick="closeModal('recipeDetailModal')" class="absolute top-2 right-2 bg-saddle/80 text-cream rounded-full w-8 h-8 flex items-center justify-center text-xl font-bold z-10 hover:bg-saddle">&times;</button>
             
             <div class="w-full h-48 sm:h-56 bg-borderRustic overflow-hidden shrink-0">
                 <img id="detailImage" src="" alt="Recipe" class="w-full h-full object-cover">
@@ -480,49 +473,24 @@
 
     <!-- ==================== JAVASCRIPT LOGIC ==================== -->
     <script>
-        // --- CLOUD CATALOG CONFIGURATION ---
-        // Replace with your full 'https://YOUR-USERNAME.github.io/pantry-chef/recipes.json' URL when wrapping into a native APK/iOS app:
-        const DEFAULT_CATALOG_URL = "./recipes.json";
-
-        // --- PWA & SERVICE WORKER REGISTRATION ---
-        let deferredInstallPrompt = null;
-
+        // 1. AUTO-CLEAR ANY STUCK SERVICE WORKER CACHE FROM EARLIER BUILDS
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(() => {});
-            });
-        }
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-        });
-
-        function checkStandaloneMode() {
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-            const installCard = document.getElementById('installAppCard');
-            if (isStandalone && installCard) {
-                installCard.classList.add('hidden');
-            }
-        }
-
-        async function triggerInstallApp() {
-            if (deferredInstallPrompt) {
-                deferredInstallPrompt.prompt();
-                const { outcome } = await deferredInstallPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    showToast("Installing Pantry Chef...");
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (let registration of registrations) {
+                    registration.unregister();
                 }
-                deferredInstallPrompt = null;
-            } else {
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                if (isIOS) {
-                    showToast("In Safari: Tap Share -> Add to Home Screen");
-                } else {
-                    showToast("In Chrome: Tap Menu (⋮) -> Add to Home screen");
-                }
-            }
+            }).catch(function() {});
         }
+        if ('caches' in window) {
+            caches.keys().then(function(keys) {
+                for (let key of keys) {
+                    caches.delete(key);
+                }
+            }).catch(function() {});
+        }
+
+        // --- CLOUD CATALOG CONFIGURATION ---
+        const DEFAULT_CATALOG_URL = "./recipes.json";
 
         // --- DATA DICTIONARIES ---
         const STAPLES = ["salt", "black pepper", "pepper", "olive oil", "oil", "water", "butter", "sugar", "garlic", "garlic powder", "onion powder", "flour", "cooking spray"];
@@ -562,7 +530,7 @@
                 appliance: "Stovetop",
                 mealType: "Dinner",
                 dishType: "Main Dish",
-                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Country+Pan+Chicken"
+                image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Country+Pan+Chicken](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Country+Pan+Chicken)"
             },
             {
                 name: "Farmhouse Chicken & Crispy Potato Sheet-Pan Bake",
@@ -584,7 +552,7 @@
                 appliance: "Oven",
                 mealType: "Dinner",
                 dishType: "Bake",
-                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Chicken+Bake"
+                image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Chicken+Bake](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Chicken+Bake)"
             },
             {
                 name: "Rustic Farmhouse Breakfast Scramble",
@@ -607,7 +575,7 @@
                 appliance: "Stovetop",
                 mealType: "Breakfast",
                 dishType: "Main Dish",
-                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Breakfast+Scramble"
+                image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Breakfast+Scramble](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Breakfast+Scramble)"
             },
             {
                 name: "Country Store Skillet Spaghetti & Rich Meat Sauce",
@@ -630,7 +598,7 @@
                 appliance: "Stovetop",
                 mealType: "Dinner",
                 dishType: "Main Dish",
-                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Spaghetti"
+                image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Spaghetti](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Spaghetti)"
             },
             {
                 name: "Cast-Iron Garlic Butter Steak & Blistered Bell Peppers",
@@ -653,7 +621,7 @@
                 appliance: "Stovetop",
                 mealType: "Dinner",
                 dishType: "Main Dish",
-                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Garlic+Butter+Steak"
+                image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Garlic+Butter+Steak](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Garlic+Butter+Steak)"
             },
             {
                 name: "Pan-Seared Honey-Garlic Salmon & Broccoli Skillet",
@@ -675,7 +643,7 @@
                 appliance: "Stovetop",
                 mealType: "Dinner",
                 dishType: "Main Dish",
-                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Honey+Garlic+Salmon"
+                image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Honey+Garlic+Salmon](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Honey+Garlic+Salmon)"
             },
             {
                 name: "Baked Three-Layer Cheesy Garlic Pasta Casserole",
@@ -698,7 +666,7 @@
                 appliance: "Oven",
                 mealType: "Dinner",
                 dishType: "Bake",
-                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Cheesy+Pasta+Bake"
+                image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Cheesy+Pasta+Bake](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Cheesy+Pasta+Bake)"
             },
             {
                 name: "Slow-Simmered Country Beef & Potato Stew",
@@ -721,7 +689,7 @@
                 appliance: "Slow Cooker",
                 mealType: "Dinner",
                 dishType: "Main Dish",
-                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Country+Beef+Stew"
+                image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Country+Beef+Stew](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Country+Beef+Stew)"
             },
             {
                 name: "Air Fryer Crispy Garlic-Parmesan Pork Chops",
@@ -742,11 +710,10 @@
                 appliance: "Air Fryer",
                 mealType: "Dinner",
                 dishType: "Main Dish",
-                image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Crispy+Pork+Chops"
+                image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Crispy+Pork+Chops](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Crispy+Pork+Chops)"
             }
         ];
 
-        // Built-in fallback catalog (used if offline or before recipes.json is reachable)
         let CLOUD_CATALOG = [
             {
                 id: "pack_bbq",
@@ -773,7 +740,7 @@
                         appliance: "Smoker",
                         mealType: "Dinner",
                         dishType: "Main Dish",
-                        image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Pulled+Pork"
+                        image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Pulled+Pork](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Pulled+Pork)"
                     }
                 ]
             },
@@ -800,7 +767,7 @@
                         appliance: "Sous Vide",
                         mealType: "Dinner",
                         dishType: "Main Dish",
-                        image: "https://placehold.co/600x400/e2d5c4/2c4c3b?text=Sous+Vide+Chicken"
+                        image: "[https://placehold.co/600x400/e2d5c4/2c4c3b?text=Sous+Vide+Chicken](https://placehold.co/600x400/e2d5c4/2c4c3b?text=Sous+Vide+Chicken)"
                     }
                 ]
             }
@@ -810,43 +777,54 @@
         let customAppliances = [];
         let inventory = [];
         let savedCustomIngredients = [];
-        let currentMatchedRecipes = []; // Holds the active search results
+        let currentMatchedRecipes = [];
 
-        // --- INIT ---
-        window.onload = () => {
-            loadInventory();
-            loadAppliances();
-            loadCustomIngredients();
-            loadCatalogUrl();
-            checkStandaloneMode();
-        };
+        // --- SAFE STORAGE PARSER (Prevents corrupted localStorage from crashing the app) ---
+        function safeGetStorageArray(key) {
+            try {
+                const raw = localStorage.getItem(key);
+                if (!raw) return [];
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                localStorage.removeItem(key);
+                return [];
+            }
+        }
 
         // --- UI UTILITIES ---
         function switchTab(tabId) {
             const tabs = ['pantry', 'recipes', 'settings'];
-            tabs.forEach(t => {
-                document.getElementById('tab-' + t).classList.add('hidden');
+            tabs.forEach(function(t) {
+                const sec = document.getElementById('tab-' + t);
                 const btn = document.getElementById('btn-' + t);
-                btn.classList.remove('tab-active');
-                btn.classList.add('tab-inactive');
+                if (sec) sec.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('tab-inactive');
+                }
             });
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeSec = document.getElementById('tab-' + tabId);
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('tab-inactive');
-            activeBtn.classList.add('tab-active');
+            if (activeSec) activeSec.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.remove('tab-inactive');
+                activeBtn.classList.add('tab-active');
+            }
         }
 
         let toastTimeout;
         function showToast(message) {
             const toast = document.getElementById('toastContainer');
+            if (!toast) return;
             toast.innerText = message;
             toast.classList.remove('hidden');
             toast.classList.remove('toast-anim');
-            void toast.offsetWidth; // trigger reflow
+            void toast.offsetWidth;
             toast.classList.add('toast-anim');
             
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
+            toastTimeout = setTimeout(function() {
                 toast.classList.add('hidden');
             }, 2900);
         }
@@ -861,17 +839,24 @@
             document.getElementById('confirmModal').classList.add('hidden');
             currentConfirmAction = null;
         }
-        document.getElementById('confirmBtnAction').addEventListener('click', () => {
+        document.getElementById('confirmBtnAction').addEventListener('click', function() {
             if (currentConfirmAction) currentConfirmAction();
             closeConfirmModal();
         });
 
         // --- PANTRY LOGIC ---
         function loadInventory() {
-            const stored = localStorage.getItem('farmChef_inventory');
-            if (stored) {
-                inventory = JSON.parse(stored);
-            }
+            const rawInv = safeGetStorageArray('farmChef_inventory');
+            inventory = rawInv.filter(function(item) {
+                return item && typeof item.name === 'string';
+            }).map(function(item, idx) {
+                return {
+                    id: item.id ? String(item.id) : (Date.now() + '-' + idx),
+                    name: item.name,
+                    location: item.location || 'Pantry',
+                    dateAdded: item.dateAdded || item.added || Date.now()
+                };
+            });
             renderInventory();
         }
 
@@ -880,28 +865,28 @@
         }
 
         function loadCustomIngredients() {
-            const stored = localStorage.getItem('farmChef_savedCustomItems');
-            if (stored) {
-                savedCustomIngredients = JSON.parse(stored);
-            }
+            savedCustomIngredients = safeGetStorageArray('farmChef_savedCustomItems').filter(function(x) {
+                return typeof x === 'string';
+            });
             renderCustomItemsList();
         }
 
         function renderCustomItemsList() {
             const container = document.getElementById('customItemsContainer');
+            if (!container) return;
             if (savedCustomIngredients.length === 0) {
                 container.innerHTML = '';
                 return;
             }
             let html = '<div class="category-header sticky top-0 px-3 py-1.5 text-sm font-bold shadow-sm z-10 text-denim bg-cream border-denim/30">My Custom Items</div>';
-            savedCustomIngredients.forEach((item, index) => {
+            savedCustomIngredients.forEach(function(item, index) {
                 html += `
                 <div class="flex justify-between items-center border-b border-borderRustic/30 hover:bg-cream/50 pr-3">
                     <label class="flex items-center gap-3 px-3 py-2 cursor-pointer flex-grow">
                         <input type="checkbox" value="${item}" class="ingredient-cb w-4 h-4 accent-denim">
                         <span class="text-sm font-medium text-denim">${item}</span>
                     </label>
-                    <button onclick="removeSavedCustomItem(${index})" class="text-brick font-bold px-2 py-0.5 text-lg hover:opacity-80 leading-none">&times;</button>
+                    <button type="button" onclick="removeSavedCustomItem(${index})" class="text-brick font-bold px-2 py-0.5 text-lg hover:opacity-80 leading-none">&times;</button>
                 </div>`;
             });
             container.innerHTML = html;
@@ -915,17 +900,16 @@
 
         function addIngredient() {
             const checkedBoxes = document.querySelectorAll('.ingredient-cb:checked');
-            const custom = document.getElementById('customIngredient').value.trim();
-            const loc = document.getElementById('ingredientLocation').value;
+            const customInput = document.getElementById('customIngredient');
+            const custom = customInput ? customInput.value.trim() : '';
+            const locSelect = document.getElementById('ingredientLocation');
+            const loc = locSelect ? locSelect.value : 'Pantry';
             
             let toAdd = [];
-            
-            // Gather selected items from the checkboxes
-            checkedBoxes.forEach(cb => {
+            checkedBoxes.forEach(function(cb) {
                 toAdd.push(cb.value);
             });
             
-            // Include custom text if provided
             if (custom) {
                 toAdd.push(custom);
                 const saveCheckbox = document.getElementById('saveCustomCheckbox');
@@ -935,7 +919,7 @@
                         localStorage.setItem('farmChef_savedCustomItems', JSON.stringify(savedCustomIngredients));
                         renderCustomItemsList();
                     }
-                    saveCheckbox.checked = false; // reset the checkbox
+                    saveCheckbox.checked = false;
                 }
             }
 
@@ -945,7 +929,7 @@
             }
 
             const now = Date.now();
-            toAdd.forEach((name, index) => {
+            toAdd.forEach(function(name, index) {
                 inventory.push({
                     id: now.toString() + '-' + index,
                     name: name,
@@ -954,33 +938,32 @@
                 });
             });
 
-            // Clear inputs and selections
-            document.getElementById('customIngredient').value = '';
-            checkedBoxes.forEach(cb => cb.checked = false);
+            if (customInput) customInput.value = '';
+            checkedBoxes.forEach(function(cb) { cb.checked = false; });
             
             saveInventory();
             renderInventory();
-            showToast(`Added ${toAdd.length} item(s) to ${loc}!`);
+            showToast("Added " + toAdd.length + " item(s) to " + loc + "!");
         }
 
         function updateIngredientLocation(id, newLoc) {
-            const item = inventory.find(i => i.id === id);
+            const item = inventory.find(function(i) { return String(i.id) === String(id); });
             if (item) {
                 item.location = newLoc;
                 saveInventory();
                 renderInventory();
-                showToast(`Moved ${item.name} to ${newLoc}!`);
+                showToast("Moved " + item.name + " to " + newLoc + "!");
             }
         }
 
         function removeIngredient(id) {
-            inventory = inventory.filter(i => i.id !== id);
+            inventory = inventory.filter(function(i) { return String(i.id) !== String(id); });
             saveInventory();
             renderInventory();
         }
 
         function triggerClearInventory() {
-            openConfirmModal("Are you sure you want to clear your entire pantry stock?", () => {
+            openConfirmModal("Are you sure you want to clear your entire pantry stock?", function() {
                 inventory = [];
                 saveInventory();
                 renderInventory();
@@ -990,6 +973,7 @@
 
         function renderInventory() {
             const list = document.getElementById('inventoryList');
+            if (!list) return;
             if (inventory.length === 0) {
                 list.innerHTML = '<p class="text-sm opacity-70 italic text-center py-6 font-serif">Your storehouse is empty.</p>';
                 return;
@@ -998,10 +982,10 @@
             const now = Date.now();
             const msInDay = 24 * 60 * 60 * 1000;
 
-            list.innerHTML = inventory.slice().reverse().map(item => {
-                const daysOld = Math.floor((now - item.dateAdded) / msInDay);
+            list.innerHTML = inventory.slice().reverse().map(function(item) {
+                const daysOld = Math.max(0, Math.floor((now - (item.dateAdded || now)) / msInDay));
                 const badgeColor = daysOld >= 7 ? 'bg-brick text-cream' : 'bg-borderRustic text-saddle';
-                const ageText = daysOld === 0 ? 'Fresh' : `${daysOld}d old`;
+                const ageText = daysOld === 0 ? 'Fresh' : (daysOld + 'd old');
                 
                 const locColorMap = { 'Pantry': 'bg-pantry', 'Fridge': 'bg-fridge', 'Freezer': 'bg-freezer' };
                 const locBg = locColorMap[item.location] || 'bg-white';
@@ -1019,7 +1003,7 @@
                             <span class="text-[10px] uppercase tracking-wide font-bold ${badgeColor} px-2 py-0.5 rounded">${ageText}</span>
                         </div>
                     </div>
-                    <button onclick="removeIngredient('${item.id}')" class="text-cream font-bold px-2.5 py-1 bg-brick rounded shadow-sm hover:opacity-90">&times;</button>
+                    <button type="button" onclick="removeIngredient('${item.id}')" class="text-cream font-bold px-2.5 py-1 bg-brick rounded shadow-sm hover:opacity-90">&times;</button>
                 </div>`;
             }).join('');
         }
@@ -1027,27 +1011,28 @@
         // --- RECIPE LOGIC ---
         function toggleApplianceMenu() {
             const menu = document.getElementById('applianceMenu');
-            menu.classList.toggle('hidden');
+            if (menu) menu.classList.toggle('hidden');
         }
 
         function loadAppliances() {
-            const stored = localStorage.getItem('farmChef_customAppliances');
-            if (stored) customAppliances = JSON.parse(stored);
+            customAppliances = safeGetStorageArray('farmChef_customAppliances').filter(function(x) {
+                return typeof x === 'string';
+            });
             renderCustomAppliances();
             renderApplianceMenu();
         }
 
         function renderApplianceMenu() {
             const menu = document.getElementById('applianceMenu');
+            if (!menu) return;
             const allApps = [...DEFAULT_APPLIANCES, ...customAppliances];
             
-            // Preserve checked state
-            const currentChecked = Array.from(menu.querySelectorAll('input:checked')).map(cb => cb.value);
+            const currentChecked = Array.from(menu.querySelectorAll('input:checked')).map(function(cb) { return cb.value; });
             const isAny = currentChecked.length === 0 || currentChecked.includes("Any");
 
             let html = `<label class="flex items-center gap-2 text-sm p-1.5 font-medium border-b border-borderRustic mb-1"><input type="checkbox" value="Any" ${isAny ? 'checked' : ''} onchange="handleApplianceChange(this)"> Any / All</label>`;
             
-            allApps.forEach(app => {
+            allApps.forEach(function(app) {
                 const checked = (!isAny && currentChecked.includes(app)) ? 'checked' : '';
                 html += `<label class="flex items-center gap-2 text-sm p-1 hover:bg-white rounded"><input type="checkbox" value="${app}" ${checked} onchange="handleApplianceChange(this)"> ${app}</label>`;
             });
@@ -1056,6 +1041,7 @@
 
         function addCustomAppliance() {
             const input = document.getElementById('newApplianceInput');
+            if (!input) return;
             const name = input.value.trim();
             if (!name) return;
             if (!customAppliances.includes(name) && !DEFAULT_APPLIANCES.includes(name)) {
@@ -1066,32 +1052,32 @@
                 renderApplianceMenu();
                 showToast("Appliance Added!");
             } else {
-                input.value = ''; // clear if duplicate
+                input.value = '';
             }
         }
 
         function removeCustomAppliance(name) {
-            customAppliances = customAppliances.filter(a => a !== name);
+            customAppliances = customAppliances.filter(function(a) { return a !== name; });
             localStorage.setItem('farmChef_customAppliances', JSON.stringify(customAppliances));
             renderCustomAppliances();
             renderApplianceMenu();
-            
-            // Update selected text on button just in case removed appliance was selected
             handleApplianceChange({ value: 'force_update', checked: false }); 
         }
 
         function renderCustomAppliances() {
             const list = document.getElementById('customApplianceList');
+            if (!list) return;
             if (customAppliances.length === 0) {
                 list.innerHTML = '<p class="text-xs opacity-70 italic text-center py-2 font-serif">No custom appliances added yet.</p>';
                 return;
             }
-            list.innerHTML = customAppliances.map(app => `
+            list.innerHTML = customAppliances.map(function(app) {
+                return `
                 <div class="flex justify-between items-center bg-white border border-borderRustic p-2.5 rounded text-sm shadow-sm">
                     <span class="font-bold text-darkText">${app}</span>
-                    <button onclick="removeCustomAppliance('${app}')" class="text-cream font-bold px-2 py-1 bg-brick rounded shadow-sm hover:opacity-90">&times;</button>
-                </div>
-            `).join('');
+                    <button type="button" onclick="removeCustomAppliance('${app}')" class="text-cream font-bold px-2 py-1 bg-brick rounded shadow-sm hover:opacity-90">&times;</button>
+                </div>`;
+            }).join('');
         }
 
         function handleApplianceChange(checkbox) {
@@ -1103,19 +1089,18 @@
             const others = menu.querySelectorAll('input:not([value="Any"])');
             
             if (checkbox.value === "Any" && checkbox.checked) {
-                others.forEach(cb => cb.checked = false);
+                others.forEach(function(cb) { cb.checked = false; });
             } else if (checkbox.checked && checkbox.value !== 'force_update') {
                 anyBox.checked = false;
             }
 
-            // Update button text
-            const checked = Array.from(menu.querySelectorAll('input:checked')).map(cb => cb.value);
+            const checked = Array.from(menu.querySelectorAll('input:checked')).map(function(cb) { return cb.value; });
             const btn = document.getElementById('applianceBtn');
             if (checked.length === 0 || checked.includes("Any")) {
                 anyBox.checked = true;
-                btn.innerText = "Any / All";
+                if (btn) btn.innerText = "Any / All";
             } else {
-                btn.innerText = checked.join(', ');
+                if (btn) btn.innerText = checked.join(', ');
             }
         }
 
@@ -1129,30 +1114,29 @@
             const mealType = document.getElementById('filterMeal').value;
             const dishType = document.getElementById('filterDish').value;
             
-            const selectedApps = Array.from(document.querySelectorAll('#applianceMenu input:checked')).map(cb => cb.value);
-            const hasAnyApp = selectedApps.includes('Any');
+            const selectedApps = Array.from(document.querySelectorAll('#applianceMenu input:checked')).map(function(cb) { return cb.value; });
+            const hasAnyApp = selectedApps.length === 0 || selectedApps.includes('Any');
 
-            let offlineRecipes = JSON.parse(localStorage.getItem('farmChef_offlineRecipes')) || [];
+            let offlineRecipes = safeGetStorageArray('farmChef_offlineRecipes');
             let allRecipes = [...CORE_RECIPES, ...offlineRecipes];
             let matchedRecipes = [];
 
-            const invNames = inventory.map(i => i.name.toLowerCase());
+            const invNames = inventory.map(function(i) { return String(i.name).toLowerCase(); });
 
-            // Get oldest priority items
             let topOldest = [];
             if (useOldest) {
                 const locScore = { 'Fridge': 1, 'Pantry': 2, 'Freezer': 3 };
-                let sortedInv = [...inventory].sort((a, b) => {
+                let sortedInv = [...inventory].sort(function(a, b) {
                     let sA = locScore[a.location] || 2;
                     let sB = locScore[b.location] || 2;
                     if (sA !== sB) return sA - sB;
-                    return a.dateAdded - b.dateAdded; // Oldest first
+                    return (a.dateAdded || 0) - (b.dateAdded || 0);
                 });
-                topOldest = sortedInv.slice(0, 3).map(i => i.name.toLowerCase());
+                topOldest = sortedInv.slice(0, 3).map(function(i) { return String(i.name).toLowerCase(); });
             }
 
-            allRecipes.forEach(recipe => {
-                // Filters
+            allRecipes.forEach(function(recipe) {
+                if (!recipe || !Array.isArray(recipe.ingredients)) return;
                 if (!hasAnyApp && recipe.appliance && !selectedApps.includes(recipe.appliance)) return;
                 if (mealType !== 'Any' && recipe.mealType && recipe.mealType !== mealType) return;
                 if (dishType !== 'Any' && recipe.dishType && recipe.dishType !== dishType) return;
@@ -1160,29 +1144,29 @@
                 let missing = [];
                 let found = [];
 
-                recipe.ingredients.forEach(req => {
-                    // Extract core ingredient name before "—" so measurement notes don't trigger false matches
+                recipe.ingredients.forEach(function(reqItem) {
+                    // Safely handle both string ingredients and legacy object ingredients
+                    let req = typeof reqItem === 'string' ? reqItem : (reqItem && reqItem.key ? reqItem.key : '');
+                    if (!req) return;
+
                     let coreReq = req.split('—')[0].trim().toLowerCase();
                     
-                    // In Pantry? (Check user's inventory first)
-                    let exact = invNames.find(n => n.includes(coreReq) || coreReq.includes(n));
+                    let exact = invNames.find(function(n) { return n.includes(coreReq) || coreReq.includes(n); });
                     if (exact) {
                         found.push({ name: req, coreName: coreReq, sub: null });
                         return;
                     }
 
-                    // Is Staple?
-                    if (STAPLES.some(s => coreReq === s || coreReq.includes(s))) {
+                    if (STAPLES.some(function(s) { return coreReq === s || coreReq.includes(s); })) {
                         found.push({ name: req, coreName: coreReq, sub: 'Staple' });
                         return;
                     }
 
-                    // Substitution Logic
                     let didSub = false;
                     for (const [orig, subs] of Object.entries(SUBSTITUTIONS)) {
                         if (coreReq.includes(orig) || orig.includes(coreReq)) {
                             for (let sub of subs) {
-                                if (invNames.find(n => n.includes(sub))) {
+                                if (invNames.find(function(n) { return n.includes(sub); })) {
                                     found.push({ name: req, coreName: coreReq, sub: sub });
                                     didSub = true;
                                     break;
@@ -1195,16 +1179,14 @@
                     if (!didSub) missing.push(req);
                 });
 
-                // Check Strictness (Offline engine rule set)
                 if (isStrict && missing.length > 0) return;
                 if (!isStrict && missing.length > 4) return;
 
-                // Priority Check (Must use at least one old ingredient)
                 if (useOldest && topOldest.length > 0) {
-                    const usesOldest = found.some(f => {
+                    const usesOldest = found.some(function(f) {
                         let n = (f.coreName || f.name).toLowerCase();
                         let s = f.sub ? f.sub.toLowerCase() : null;
-                        return topOldest.some(o => o.includes(n) || n.includes(o) || (s && (o.includes(s) || s.includes(o))));
+                        return topOldest.some(function(o) { return o.includes(n) || n.includes(o) || (s && (o.includes(s) || s.includes(o))); });
                     });
                     if (!usesOldest) return;
                 }
@@ -1214,18 +1196,14 @@
                 }
             });
 
-            // Sort by missing ingredients (most complete first)
-            matchedRecipes.sort((a, b) => a.missingList.length - b.missingList.length);
-            
-            // Store results globally and render
+            matchedRecipes.sort(function(a, b) { return a.missingList.length - b.missingList.length; });
             currentMatchedRecipes = matchedRecipes;
             renderRecipes();
         }
 
         function refreshRecipes() {
-            if(currentMatchedRecipes.length === 0) return;
-            // Shuffle the current valid results
-            currentMatchedRecipes = currentMatchedRecipes.sort(() => Math.random() - 0.5);
+            if (currentMatchedRecipes.length === 0) return;
+            currentMatchedRecipes = currentMatchedRecipes.sort(function() { return Math.random() - 0.5; });
             renderRecipes();
             showToast("Recipes shuffled!");
         }
@@ -1235,19 +1213,18 @@
             const refreshBtn = document.getElementById('refreshBtn');
             
             if (currentMatchedRecipes.length === 0) {
-                refreshBtn.classList.add('hidden');
+                if (refreshBtn) refreshBtn.classList.add('hidden');
                 container.innerHTML = '<div class="p-6 bg-cream border-2 border-saddle text-center rounded shadow-sm"><p class="text-sm font-bold text-saddle">No recipes found matching your stock.</p><p class="text-xs mt-2 opacity-80">Try toggling off "Strict Match" for meal planning mode.</p></div>';
                 return;
             }
 
-            // Show refresh button if there are recipes
             if (currentMatchedRecipes.length > 1) {
-                refreshBtn.classList.remove('hidden');
+                if (refreshBtn) refreshBtn.classList.remove('hidden');
             } else {
-                refreshBtn.classList.add('hidden');
+                if (refreshBtn) refreshBtn.classList.add('hidden');
             }
 
-            container.innerHTML = currentMatchedRecipes.map((r, index) => {
+            container.innerHTML = currentMatchedRecipes.map(function(r, index) {
                 const missingCount = r.missingList.length;
                 const missingBadge = missingCount > 0 
                     ? `<span class="bg-brick text-cream text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wide">Missing ${missingCount} items</span>` 
@@ -1256,7 +1233,7 @@
                 return `
                 <div onclick="openRecipeModal(${index})" class="rustic-card p-4 border-2 border-borderRustic hover:border-denim hover:shadow-md transition-all cursor-pointer flex gap-4 items-center">
                     <div class="w-20 h-20 bg-borderRustic rounded overflow-hidden flex-shrink-0 border border-saddle/20">
-                        <img src="${r.image || 'https://placehold.co/150x150/e2d5c4/455a64?text=Food'}" alt="${r.name}" class="w-full h-full object-cover">
+                        <img src="${r.image || '[https://placehold.co/150x150/e2d5c4/455a64?text=Food](https://placehold.co/150x150/e2d5c4/455a64?text=Food)'}" alt="${r.name}" class="w-full h-full object-cover">
                     </div>
                     <div class="flex flex-col flex-grow">
                         <h3 class="font-serif font-bold text-lg leading-tight text-saddle mb-1">${r.name}</h3>
@@ -1275,9 +1252,8 @@
             const recipe = currentMatchedRecipes[index];
             if (!recipe) return;
 
-            // Populate text/images
             document.getElementById('detailTitle').innerText = recipe.name;
-            document.getElementById('detailImage').src = recipe.image || 'https://placehold.co/600x400/e2d5c4/455a64?text=Food';
+            document.getElementById('detailImage').src = recipe.image || '[https://placehold.co/600x400/e2d5c4/455a64?text=Food](https://placehold.co/600x400/e2d5c4/455a64?text=Food)';
             document.getElementById('detailAppliance').innerText = recipe.appliance || 'Any App';
             document.getElementById('detailMeal').innerText = recipe.mealType || 'Any Meal';
             document.getElementById('detailDescription').innerText = recipe.description || '';
@@ -1291,11 +1267,10 @@
                 mixBox.classList.add('hidden');
             }
 
-            // Populate ingredients (Found vs Missing)
             const ingredientsContainer = document.getElementById('detailIngredients');
             let ingHTML = '';
             
-            recipe.foundList.forEach(f => {
+            recipe.foundList.forEach(function(f) {
                 let note = '';
                 if (f.sub === 'Staple') note = ' <span class="opacity-60 font-normal italic">(Staple)</span>';
                 else if (f.sub) note = ` <span class="text-denim italic font-normal">(Sub: ${f.sub})</span>`;
@@ -1307,7 +1282,7 @@
                     </div>`;
             });
 
-            recipe.missingList.forEach(m => {
+            recipe.missingList.forEach(function(m) {
                 ingHTML += `
                     <div class="flex items-start gap-2 text-sm text-brick font-bold opacity-90 py-0.5">
                         <svg class="w-4 h-4 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
@@ -1316,11 +1291,10 @@
             });
             ingredientsContainer.innerHTML = ingHTML;
 
-            // Populate Instructions
             const instrContainer = document.getElementById('detailInstructions');
-            instrContainer.innerHTML = recipe.instructions.map(step => `<li>${step}</li>`).join('');
+            const steps = Array.isArray(recipe.instructions) ? recipe.instructions : [];
+            instrContainer.innerHTML = steps.map(function(step) { return `<li>${step}</li>`; }).join('');
 
-            // Show Modal
             document.getElementById('recipeDetailModal').classList.remove('hidden');
         }
 
@@ -1333,6 +1307,147 @@
 
         function saveCatalogUrl() {
             const input = document.getElementById('catalogUrlInput');
-            const url = input.value.trim() || DEFAULT_CATALOG_URL;
+            const url = (input && input.value.trim()) ? input.value.trim() : DEFAULT_CATALOG_URL;
             localStorage.setItem('farmChef_catalogUrl', url);
             showToast("Catalog URL saved!");
+        }
+
+        async function openCatalogModal() {
+            const list = document.getElementById('catalogList');
+            const status = document.getElementById('catalogSyncStatus');
+            const catalogUrl = localStorage.getItem('farmChef_catalogUrl') || DEFAULT_CATALOG_URL;
+
+            document.getElementById('catalogModal').classList.remove('hidden');
+            if (status) status.innerText = "Syncing from " + catalogUrl + "...";
+
+            try {
+                const response = await fetch(catalogUrl, { cache: 'no-store' });
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const data = await response.json();
+                const remotePacks = Array.isArray(data) ? data : (data.packs || []);
+                if (remotePacks.length > 0) {
+                    CLOUD_CATALOG = remotePacks;
+                    localStorage.setItem('farmChef_cachedCatalog', JSON.stringify(remotePacks));
+                    if (status) status.innerText = "Synced live from GitHub (" + remotePacks.length + " packs available)";
+                }
+            } catch (err) {
+                const cached = safeGetStorageArray('farmChef_cachedCatalog');
+                if (cached.length > 0) {
+                    CLOUD_CATALOG = cached;
+                }
+                if (status) status.innerText = "Offline / Built-in Catalog Active";
+            }
+
+            list.innerHTML = CLOUD_CATALOG.map(function(p) {
+                return `
+                <div class="border border-borderRustic p-4 rounded bg-white shadow-sm">
+                    <div class="flex justify-between items-start mb-1">
+                        <h4 class="font-bold text-base text-saddle">${p.name}</h4>
+                        <span class="text-[10px] font-bold uppercase bg-cream border border-borderRustic px-2 py-0.5 rounded">${(p.recipes || []).length} Recipes</span>
+                    </div>
+                    <p class="text-sm opacity-80 mb-4">${p.description}</p>
+                    <button type="button" onclick="downloadPack('${p.id}')" class="bg-denim text-cream text-xs font-bold px-4 py-2.5 rounded shadow hover:opacity-90 uppercase tracking-wider">Download / Update Pack</button>
+                </div>`;
+            }).join('');
+        }
+
+        function downloadPack(id) {
+            const pack = CLOUD_CATALOG.find(function(p) { return p.id === id; });
+            if (!pack) return;
+
+            let existing = safeGetStorageArray('farmChef_offlineRecipes');
+            let count = 0;
+            
+            (pack.recipes || []).forEach(function(r) {
+                const idx = existing.findIndex(function(e) { return e && e.name === r.name; });
+                if (idx === -1) {
+                    existing.push(r);
+                    count++;
+                } else {
+                    existing[idx] = r;
+                }
+            });
+
+            localStorage.setItem('farmChef_offlineRecipes', JSON.stringify(existing));
+            closeModal('catalogModal');
+            
+            if (count > 0) {
+                showToast("Successfully stocked " + count + " new recipes!");
+            } else {
+                showToast("Cookbook synced with latest measurements!");
+            }
+        }
+
+        function openManageModal() {
+            const list = document.getElementById('manageList');
+            let existing = safeGetStorageArray('farmChef_offlineRecipes');
+            
+            if (existing.length === 0) {
+                list.innerHTML = '<p class="text-sm opacity-70 italic font-serif text-center py-4">No extra recipe books downloaded.</p>';
+            } else {
+                list.innerHTML = existing.map(function(r, i) {
+                    return `
+                    <div class="flex justify-between items-center bg-white border border-borderRustic p-3 rounded shadow-sm">
+                        <span class="text-sm font-bold truncate pr-2 text-darkText">${r.name}</span>
+                        <button type="button" onclick="removePackRecipe(${i})" class="text-cream font-bold px-2.5 py-1 bg-brick rounded shadow hover:opacity-90">&times;</button>
+                    </div>`;
+                }).join('');
+            }
+            document.getElementById('manageModal').classList.remove('hidden');
+        }
+
+        function removePackRecipe(index) {
+            let existing = safeGetStorageArray('farmChef_offlineRecipes');
+            existing.splice(index, 1);
+            localStorage.setItem('farmChef_offlineRecipes', JSON.stringify(existing));
+            openManageModal();
+        }
+
+        function triggerClearOfflineRecipes() {
+            openConfirmModal("Are you sure you want to delete all downloaded cookbooks?", function() {
+                localStorage.removeItem('farmChef_offlineRecipes');
+                openManageModal();
+                showToast("Downloads deleted.");
+            });
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        }
+
+        // Explicitly bind all handlers to window for guaranteed inline onclick execution
+        window.switchTab = switchTab;
+        window.showToast = showToast;
+        window.openConfirmModal = openConfirmModal;
+        window.closeConfirmModal = closeConfirmModal;
+        window.addIngredient = addIngredient;
+        window.removeIngredient = removeIngredient;
+        window.updateIngredientLocation = updateIngredientLocation;
+        window.removeSavedCustomItem = removeSavedCustomItem;
+        window.triggerClearInventory = triggerClearInventory;
+        window.toggleApplianceMenu = toggleApplianceMenu;
+        window.addCustomAppliance = addCustomAppliance;
+        window.removeCustomAppliance = removeCustomAppliance;
+        window.handleApplianceChange = handleApplianceChange;
+        window.generateRecipes = generateRecipes;
+        window.refreshRecipes = refreshRecipes;
+        window.openRecipeModal = openRecipeModal;
+        window.saveCatalogUrl = saveCatalogUrl;
+        window.openCatalogModal = openCatalogModal;
+        window.downloadPack = downloadPack;
+        window.openManageModal = openManageModal;
+        window.removePackRecipe = removePackRecipe;
+        window.triggerClearOfflineRecipes = triggerClearOfflineRecipes;
+        window.closeModal = closeModal;
+
+        // --- SAFE INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', function() {
+            try { loadInventory(); } catch (e) { console.error(e); }
+            try { loadAppliances(); } catch (e) { console.error(e); }
+            try { loadCustomIngredients(); } catch (e) { console.error(e); }
+            try { loadCatalogUrl(); } catch (e) { console.error(e); }
+        });
+    </script>
+</body>
+</html>
